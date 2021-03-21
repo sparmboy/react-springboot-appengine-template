@@ -1,0 +1,33 @@
+runtime: java
+instance_class: B4
+env: flex
+resources:
+  cpu: 1
+  memory_gb: 4
+  disk_size_gb: 10
+  volumes:
+    - name: ramdisk1
+      volume_type: tmpfs
+      size_gb: 0.5
+runtime_config:
+  jdk: openjdk8
+env_variables:
+  SPRING_PROFILES_ACTIVE: "default"
+  JAVA_OPTS: '-XX:MaxMetaspaceSize=256m'
+  DEBUG: false
+handlers:
+  - url: /.*
+    script: this field is required, but ignored
+manual_scaling:
+  instances: 1
+liveness_check:
+  check_interval_sec: 30
+  timeout_sec: 4
+  failure_threshold: 2
+  success_threshold: 2
+readiness_check:
+  check_interval_sec: 5
+  timeout_sec: 4
+  failure_threshold: 2
+  success_threshold: 2
+  app_start_timeout_sec: 300

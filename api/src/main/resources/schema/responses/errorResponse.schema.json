@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://example.com/dto/responses/errorResponse.schema.json",
+  "title": "ErrorResponse",
+  "description": "Generic response body for all errors",
+  "type": "object",
+  "required": [
+    "errorCode",
+    "errorMessage",
+    "errorDetails"
+
+  ],
+  "properties": {
+    "errorCode": {
+      "type": "string",
+      "title": "Error Code",
+      "description": "A unique code for the error"
+    },
+    "errorMessage": {
+      "type": "string",
+      "title": "Error Message",
+      "description": "A breif description of the error"
+    },
+    "errorMessage": {
+      "type": "string",
+      "title": "Error Details",
+      "description": "A more detailed description of the error"
+    }
+
+  }
+}

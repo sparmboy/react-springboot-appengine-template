@@ -1,0 +1,64 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "This is API definition for the stock react-springboot-appengine-template app",
+    "version": "1.0.0-SNAPSHOT",
+    "title": "My App"
+  },
+  "host": "localhost:8080",
+  "basePath": "/api/v1",
+  "tags": [
+    {
+      "name": "order-controller",
+      "description": "Order Controller"
+    }
+  ],
+  "paths": {
+    "/orders": {
+      "post": {
+        "tags": [
+          "order-controller"
+        ],
+        "summary": "Handles all requests for managing orders",
+        "operationId": "placeOrder",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "placeOrderRequest",
+            "description": "Contains details of a new order to place",
+            "required": true,
+            "schema": {
+              "$ref": "./schema/requests/placeOrderRequest.schema.json"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "./schema/responses/placeOrderResponse.schema.json"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "./schema/responses/errorResponse.schema.json"
+            }
+          },
+          "500": {
+            "description": "Internal Error",
+            "schema": {
+              "$ref": "./schema/responses/errorResponse.schema.json"
+            }
+          }
+        }
+      }
+    }
+  }
+}

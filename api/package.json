@@ -1,0 +1,28 @@
+{
+  "name": "@react-springboot-appengine-template/api",
+  "version": "1.0.0-SNAPSHOT",
+  "preferGlobal": "true",
+  "dependencies": {
+    "dist": "^0.1.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://git:git@bitbucket.org:react-springboot-appengine-template/api.git"
+  },
+  "engines": {
+    "node": "12.9.1",
+    "npm": "6.11.2"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "typescript": "^4.0.3"
+  },
+  "files": [
+    "dist/**/*",
+    "src/main/resources/**/*"
+  ]
+}
