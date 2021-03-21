@@ -23,4 +23,11 @@ java -jar webapp/target/your-new-artifact-id.jar
 
 5. Access the ui on [http://localhost:8080/index.html](http://localhost:8080/index.html)
 
-
+6. Deploy to GCLoud
+    * Ensure you have a gcloud project setup with billing enabled
+    * Set the ``spring.cloud.gcp.projectId`` property in the [application.yml](webapp/src/main/resources/application.yml) to your GCloud project ID
+    * Set the ``projectId`` in the [webapp pom properties](webapp/pom.xml)
+    * Deploy by running
+````shell
+mvn clean install -Pdeploy
+````

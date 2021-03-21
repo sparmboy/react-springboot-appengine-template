@@ -1,0 +1,14 @@
+#######################################
+# E N C R Y P T I O N
+#######################################
+jasypt.encryptor.password: ${ENC_PASSWORD}
+
+#######################################
+# G O O G L E    C L O U D
+#######################################
+spring.cloud.gcp.projectId: michael-page-poc
+spring:
+  cloud:
+    config:
+      import-check:
+        enabled: false
