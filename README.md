@@ -1,11 +1,11 @@
-# app-in-a-box
+# react-springboot-appengine-template
 Repository recipe for setting up a React typescript UI and Spring Boot backend generated from a openapi definition.
 Contains config to quickly deploy to Gcloud app engine 
 
 ## Steps
 1. Clone this repo
 ```bash
-git clone git@github.com:sparmboy/react-springboot-appening-template.git mynewapp
+git clone git@github.com:sparmboy/react-springboot-appengine-template.git mynewapp
 ```
 2. Run the initialisation script to set you group and artifact details
 ```bash
