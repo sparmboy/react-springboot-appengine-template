@@ -19,6 +19,8 @@
     "build": "tsc"
   },
   "devDependencies": {
+    "@apidevtools/json-schema-ref-parser": "^9.0.9",
+    "fs": "0.0.1-security",
     "typescript": "^4.0.3"
   },
   "files": [
