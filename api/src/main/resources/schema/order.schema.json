@@ -15,7 +15,7 @@
       "description": "The amount to be placed in minor units (e.g. pence for GBP)"
     },
     "currency": {
-      "$ref": "./enums/currencyEnum.schema.json"
+      "$ref": "enums/currencyEnum.schema.json"
     }
   }
 }
