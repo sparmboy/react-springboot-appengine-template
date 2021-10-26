@@ -6,7 +6,7 @@ COPY api /home/app/api
 COPY ui /home/app/ui
 COPY webapp /home/app/webapp
 COPY pom.xml /home/app
-WORKDIR /home/app/
+WORKDIR /home/app/api
 RUN mvn clean package
 
 #
