@@ -1,6 +1,15 @@
 # react-springboot-appengine-template
-Repository recipe for setting up a React typescript UI and Spring Boot backend generated from a openapi definition.
-Contains config to quickly deploy to Gcloud app engine 
+Repository recipe for setting up a React typescript UI and Spring Boot backend generated from an openapi definition.
+
+Contains the following goodies out of the box:
+
+* Load screen
+* Material UI with Theming and Icons
+* React routing secured by authentication
+* Google, Facebook and Github Oauth authentication
+* Web sockets
+* Spring data with user principal and liquibase
+ 
 
 ## Steps
 1. Clone this repo

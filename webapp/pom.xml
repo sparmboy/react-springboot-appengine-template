@@ -18,17 +18,24 @@
         <env>prod</env>
         <!-- This is the name of your project in gcloud -->
         <projectId>react-springboot-appengine-template</projectId>
+        <spring-cloud-starter-config.version>3.0.3</spring-cloud-starter-config.version>
+        <spring-boot-starter-oauth2-client.version>2.5.1</spring-boot-starter-oauth2-client.version>
+        <spring-security-oauth2-client.version>5.4.2</spring-security-oauth2-client.version>
+        <jjwt.version>0.5.1</jjwt.version>
+        <lombok.version>1.18.16</lombok.version>
+        <validation-api.version>2.0.1.Final</validation-api.version>
+
     </properties>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
 
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-parent</artifactId>
-            <version>2.4.1</version>
-            <type>pom</type>
-            <scope>import</scope>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-parent</artifactId>
+                <version>2.4.1</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -105,6 +112,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.google.cloud</groupId>
             <artifactId>spring-cloud-gcp-starter</artifactId>
             <version>2.0.1</version>
@@ -112,11 +123,52 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-config</artifactId>
-            <version>3.0.3</version>
+            <version>${spring-cloud-starter-config.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-websocket</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-messaging</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-client</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-oauth2-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>${jjwt.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>react-springboot-appengine-template-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+        </dependency>
+
+
+        <!-- Move this to test scope when you add your database vendor -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.200</version>
         </dependency>
     </dependencies>
 
@@ -166,12 +218,20 @@
                 <executions>
                     <execution>
                         <id>repackage</id>
-                        <goals><goal>repackage</goal></goals>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
                     </execution>
                 </executions>
                 <configuration>
                     <mainClass>com.example.Application</mainClass>
                     <addResources>true</addResources>
+                    <excludes>
+                        <exclude>
+                            <groupId>org.springframework.boot</groupId>
+                            <artifactId>spring-boot-configuration-processor</artifactId>
+                        </exclude>
+                    </excludes>
                 </configuration>
             </plugin>
 

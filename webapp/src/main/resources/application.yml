@@ -6,9 +6,45 @@ jasypt.encryptor.password: ${ENC_PASSWORD}
 #######################################
 # G O O G L E    C L O U D
 #######################################
-spring.cloud.gcp.projectId: michael-page-poc
+spring.cloud.gcp.projectId: enter-your-gcloud-project-id
 spring:
   cloud:
     config:
       import-check:
         enabled: false
+
+#######################################
+# G O O G L E    O A U T H
+#######################################
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            clientId: !!Generate an OAuth2.0 Client ID in google console https://console.cloud.google.com/apis/credentials!!
+            clientSecret: !!Generate an OAuth2.0 Client Secret in google console https://console.cloud.google.com/apis/credentials!!
+            redirectUri: "{baseUrl}/api/oauth2/callback/{registrationId}"
+            scope:
+              - email
+              - profile
+
+#######################################
+# A P P L I C A T I O N
+#######################################
+logging:
+  level:
+    root: ERROR
+    app: ERROR
+app:
+  auth:
+    tokenSecret: !!ENTER_A_GENERATED_SECRET_HERE!!
+    tokenExpirationMsec: 864000000
+  oauth2:
+    # After successfully authenticating with the OAuth2 Provider,
+    # we'll be generating an auth token for the user and sending the token to the
+    # redirectUri mentioned by the client in the /oauth2/authorize request.
+    # We're not using cookies because they won't work well in mobile clients.
+    authorizedRedirectUris:
+      - http://localhost:8080/api/oauth2
+      - myandroidapp://api/oauth2/redirect
+      - myiosapp://api/oauth2/redirect

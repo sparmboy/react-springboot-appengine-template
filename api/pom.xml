@@ -73,6 +73,31 @@
     <build>
 
         <plugins>
+
+            <!-- Removes the Swagger UI from being generated -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <delete>
+                                    <fileset dir="${project.build.directory}/generated-sources" includes="**/HomeController.java" />
+                                    <fileset dir="${project.build.directory}/generated-sources" includes="**/OpenAPIDocumentationConfig.java" />
+                                    <fileset dir="${project.build.directory}/generated-sources" includes="**/OpenAPI2SpringBoot.java" />
+                                </delete>
+                            </tasks>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>

@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://example.com/dto/responses/loginRequest.schema.json",
+  "title": "Login Request",
+  "description": "Contains credentials to be verified for a login",
+  "type": "object",
+  "required": [
+    "email",
+    "password"
+  ],
+  "properties": {
+    "email": {
+      "$id": "#/properties/email",
+      "name": "Email",
+      "description": "The email of the user",
+      "type": "string"
+    },
+    "password": {
+      "$id": "#/properties/password",
+      "name": "Password",
+      "description": "The password of the user",
+      "type": "string"
+    }
+  }
+}

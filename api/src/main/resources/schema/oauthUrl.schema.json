@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://example.com/dto/responses/oauthUrl.schema.json",
+  "title": "Oauth URL",
+  "description": "A URL to an oauth endpoint",
+  "type": "object",
+  "required": [
+    "key",
+    "href"
+  ],
+  "properties": {
+    "key": {
+      "type": "string",
+      "title": "Key",
+      "description": "Key to identify the Oauth URL"
+    },
+    "href": {
+      "type": "string",
+      "title": "Href",
+      "description": "The URL endpoint"
+    }
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://example.com/dto/responses/signupRequest.schema.json",
+  "title": "Signup Request",
+  "description": "Contains details of a new user",
+  "type": "object",
+  "required": [
+    "name",
+    "email",
+    "password"
+  ],
+  "properties": {
+    "name": {
+      "$id": "#/properties/name",
+      "name": "Name",
+      "description": "The users full name",
+      "type": "string"
+    },
+    "email": {
+      "$id": "#/properties/email",
+      "name": "Email",
+      "description": "The email of the user",
+      "type": "string"
+    },
+    "password": {
+      "$id": "#/properties/password",
+      "name": "Password",
+      "description": "The password of the user",
+      "type": "string"
+    }
+  }
+}
