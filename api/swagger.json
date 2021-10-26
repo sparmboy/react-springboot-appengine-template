@@ -40,7 +40,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "src/main/resources/schema/oauthUrl.schema.json"
+                    "$ref": "./src/main/resources/schema/oauthUrl.schema.json"
                   }
                 }
               }
@@ -51,7 +51,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "src/main/resources/schema/responses/errorResponse.schema.json"
+                  "$ref": "./src/main/resources/schema/responses/errorResponse.schema.json"
                 }
               }
             }
@@ -61,7 +61,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "src/main/resources/schema/responses/errorResponse.schema.json"
+                  "$ref": "./src/main/resources/schema/responses/errorResponse.schema.json"
                 }
               }
             }
@@ -80,7 +80,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "src/main/resources/schema/requests/loginRequest.schema.json"
+                "$ref": "./src/main/resources/schema/requests/loginRequest.schema.json"
               }
             }
           }
@@ -91,7 +91,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "src/main/resources/schema/responses/authResponse.schema.json"
+                  "$ref": "./src/main/resources/schema/responses/authResponse.schema.json"
                 }
               }
             }
@@ -101,7 +101,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "src/main/resources/schema/responses/errorResponse.schema.json"
+                  "$ref": "./src/main/resources/schema/responses/errorResponse.schema.json"
                 }
               }
             }
@@ -111,7 +111,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "src/main/resources/schema/responses/errorResponse.schema.json"
+                  "$ref": "./src/main/resources/schema/responses/errorResponse.schema.json"
                 }
               }
             }
@@ -130,7 +130,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "src/main/resources/schema/requests/signUpRequest.schema.json"
+                "$ref": "./src/main/resources/schema/requests/signUpRequest.schema.json"
               }
             }
           }
@@ -151,7 +151,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "src/main/resources/schema/responses/errorResponse.schema.json"
+                  "$ref": "./src/main/resources/schema/responses/errorResponse.schema.json"
                 }
               }
             }
@@ -161,7 +161,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "src/main/resources/schema/responses/errorResponse.schema.json"
+                  "$ref": "./src/main/resources/schema/responses/errorResponse.schema.json"
                 }
               }
             }
@@ -189,7 +189,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "src/main/resources/schema/order.schema.json"
+                    "$ref": "./src/main/resources/schema/order.schema.json"
                   }
                 }
               }
@@ -200,7 +200,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "src/main/resources/schema/responses/errorResponse.schema.json"
+                  "$ref": "./src/main/resources/schema/responses/errorResponse.schema.json"
                 }
               }
             }
@@ -210,7 +210,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "src/main/resources/schema/responses/errorResponse.schema.json"
+                  "$ref": "./src/main/resources/schema/responses/errorResponse.schema.json"
                 }
               }
             }
@@ -227,7 +227,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "src/main/resources/schema/requests/placeOrderRequest.schema.json"
+                "$ref": "./src/main/resources/schema/requests/placeOrderRequest.schema.json"
               }
             }
           }
@@ -238,7 +238,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "src/main/resources/schema/responses/placeOrderResponse.schema.json"
+                  "$ref": "./src/main/resources/schema/responses/placeOrderResponse.schema.json"
                 }
               }
             }
@@ -248,7 +248,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "src/main/resources/schema/responses/errorResponse.schema.json"
+                  "$ref": "./src/main/resources/schema/responses/errorResponse.schema.json"
                 }
               }
             }
@@ -258,7 +258,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "src/main/resources/schema/responses/errorResponse.schema.json"
+                  "$ref": "./src/main/resources/schema/responses/errorResponse.schema.json"
                 }
               }
             }
