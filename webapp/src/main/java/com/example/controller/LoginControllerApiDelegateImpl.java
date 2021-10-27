@@ -9,6 +9,7 @@ import com.example.model.AuthResponse;
 import com.example.model.LoginRequest;
 import com.example.model.OauthUrl;
 import com.example.model.SignUpRequest;
+import com.example.model.SignupRequest;
 import com.example.security.TokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ResolvableType;
@@ -85,7 +86,7 @@ public class LoginControllerApiDelegateImpl implements LoginControllerApiDelegat
     }
 
     @Override
-    public ResponseEntity<String> registerUser(SignUpRequest signUpRequest) {
+    public ResponseEntity<String> registerUser(SignupRequest signUpRequest) {
         if(userRepository.existsByEmail(signUpRequest.getEmail())) {
             throw new BadRequestException("Email address already in use.");
         }
