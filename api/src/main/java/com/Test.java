@@ -9,6 +9,16 @@ import java.nio.file.Path;
 
 public class Test {
     public final static void main(String[] args) throws IOException {
+
+        System.out.println("User=" + System.getProperty("user.name")); //platform independent
+
+        File testFile = new File("/home/app/api/src/main/resources/schema/requests/signupRequest.schema.json");
+        System.out.println("File "+testFile+" exists=" + testFile.exists());
+
+        InputStream is = new FileInputStream(testFile);
+        System.out.println("Opened file "+is);
+
+
         Path parentDirectory = new File(args[0]).toPath();
         String file = args[1];
         System.out.println("Resolving " + args[1] + " from " + args[0]);
