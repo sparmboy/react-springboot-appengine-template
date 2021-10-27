@@ -1,6 +1,11 @@
 import {RouteComponentProps, useNavigate, RouterProps} from "@reach/router";
 import {Button, createStyles, Grid, makeStyles, Theme} from "@material-ui/core";
-import {MdList, MdSearch, MdSettings, MdVerifiedUser} from "react-icons/all";
+import Alert from '@material-ui/lab/Alert';
+import {BiPlug, MdList, MdSearch,  MdVerifiedUser} from "react-icons/all";
+import {host} from "../services/apiConfig";
+import {useEffect, useState} from "react";
+import {Stomp} from "@stomp/stompjs";
+import SockJS from "sockjs-client";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -21,6 +26,31 @@ interface HomeScreenProps extends RouteComponentProps<RouterProps> {
 const HomeScreen: React.FC<HomeScreenProps & RouteComponentProps> = ({authenticated}) => {
     const classes = useStyles();
     const navigate = useNavigate();
+    const socket = new SockJS(host + '/session');
+    const stompClient = Stomp.over(socket);
+    const [message,setMessage] = useState<string>();
+
+    const onSocketMessage =  (msg: any) => {
+        console.log('received message', msg.body);
+        setMessage(msg.body);
+    }
+
+    const onStompDisconnect = () => {
+        stompClient.disconnect();
+    }
+
+    const onSocketButton = () => {
+        stompClient.connect({}, (frame: any) => {
+            const stateTopic = '/topic/session';
+            console.log('Connected, subscribing to ', stateTopic)
+            stompClient.subscribe(stateTopic,onSocketMessage);
+        }, onStompDisconnect);
+    }
+
+    useEffect(()=>{
+        return onStompDisconnect;
+    },[])
+
     return <Grid
         container
         direction="column"
@@ -45,12 +75,15 @@ const HomeScreen: React.FC<HomeScreenProps & RouteComponentProps> = ({authentica
         </Grid>}
         {!authenticated &&
         <Grid item><Button className={classes.button} color={"secondary"} variant={"outlined"}
-                                   startIcon={<MdVerifiedUser size={40}/>}
-                                   onClick={() => navigate('/login')}>Login</Button></Grid>}
+                           startIcon={<MdVerifiedUser size={40}/>}
+                           onClick={() => navigate('/login')}>Login</Button></Grid>}
 
-        <Grid item><Button variant={"contained"} startIcon={<MdSettings size={40}/>}
-                                   onClick={() => navigate('/settings')}>Settings</Button></Grid>
+        <Grid item><Button variant={"contained"} startIcon={<BiPlug size={40}/>}
+                           onClick={() => onSocketButton()}>Click here to open a web socket stream</Button></Grid>
 
+        <Grid item>
+            {message && <Alert severity="info">{message}</Alert>}
+        </Grid>
 
     </Grid>
 }

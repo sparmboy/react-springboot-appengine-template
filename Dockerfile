@@ -16,4 +16,4 @@ RUN mvn clean package
 FROM openjdk:8-jdk-alpine
 COPY --from=build /home/app/webapp/target/*.jar /usr/local/lib/app.jar
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","/app.jar"]
+ENTRYPOINT ["java","-jar","/usr/local/lib/app.jar"]
