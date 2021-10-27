@@ -82,9 +82,9 @@
 
     <build>
 
-        <!--<plugins>
+        <plugins>
 
-            &lt;!&ndash; Removes the Swagger UI from being generated &ndash;&gt;
+            <!-- Removes the Swagger UI from being generated -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
@@ -134,7 +134,7 @@
                 </configuration>
             </plugin>
 
-            &lt;!&ndash; Generate the typescript API &ndash;&gt;
+            <!-- Generate the typescript API -->
             <plugin>
                 <groupId>org.openapitools</groupId>
                 <artifactId>openapi-generator-maven-plugin</artifactId>
@@ -188,11 +188,11 @@
 
             </plugin>
 
-            &lt;!&ndash; Package the UI components &ndash;&gt;
+            <!-- Package the UI components -->
             <plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin
-                </artifactId>                &lt;!&ndash; Use the latest released version: https://repo1.maven.org/maven2/com/github/eirslett/frontend-maven-plugin/ &ndash;&gt;
+                </artifactId>                <!-- Use the latest released version: https://repo1.maven.org/maven2/com/github/eirslett/frontend-maven-plugin/ -->
                 <version>1.10.2</version>
                 <configuration>
                     <workingDirectory>${basedir}</workingDirectory>
@@ -237,8 +237,8 @@
                     </execution>
                 </executions>
             </plugin>
-        </plugins>-->
-
+        </plugins>
+<!--
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -249,6 +249,6 @@
 
                 </configuration>
             </plugin>
-        </plugins>
+        </plugins>-->
     </build>
 </project>

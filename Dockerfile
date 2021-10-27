@@ -7,9 +7,9 @@ RUN ls -ltR /home/app/api/*
 COPY ui/ /home/app/ui/
 COPY webapp/ /home/app/webapp/
 COPY pom.xml /home/app
-WORKDIR /home/app/api
-RUN mvn compile exec:java -Dexec.mainClass="com.Test" -Dexec.args="/home/app/api/src/main/resources ./schema/requests/signUpRequest.schema.json"
-#RUN mvn -X clean package
+WORKDIR /home/app
+#RUN mvn compile exec:java -Dexec.mainClass="com.Test" -Dexec.args="/home/app/api/src/main/resources ./schema/requests/signUpRequest.schema.json"
+RUN mvn -X clean package
 
 #
 # Package stage
