@@ -1,7 +1,7 @@
 #
 # Build stage
 #
-FROM maven:3.3.9-jdk-8 AS build
+FROM maven:3.6.0-jdk-11-slim AS build
 COPY api/ /home/app/api/
 RUN ls -ltR /home/app/api/*
 COPY ui/ /home/app/ui/
