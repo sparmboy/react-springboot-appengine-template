@@ -8,7 +8,6 @@ import com.example.domain.exceptions.BadRequestException;
 import com.example.model.AuthResponse;
 import com.example.model.LoginRequest;
 import com.example.model.OauthUrl;
-import com.example.model.SignUpRequest;
 import com.example.model.SignupRequest;
 import com.example.security.TokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
