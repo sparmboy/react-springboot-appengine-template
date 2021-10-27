@@ -2,9 +2,10 @@
 # Build stage
 #
 FROM maven:3.3.9-jdk-8 AS build
-COPY api /home/app/api
-COPY ui /home/app/ui
-COPY webapp /home/app/webapp
+COPY api/ /home/app/api/
+RUN ls -la /home/app/api/*
+COPY ui/ /home/app/ui/
+COPY webapp/ /home/app/webapp/
 COPY pom.xml /home/app
 WORKDIR /home/app
 RUN mvn clean package
