@@ -141,13 +141,12 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>api/src/main/resources/swagger.json</inputSpec>
+                            <inputSpec>${basedir}/src/main/resources/swagger.json</inputSpec>
                             <generatorName>typescript-fetch</generatorName>
                             <output>${basedir}/target/ts</output>
                             <additionalProperties>
                                 <additionalProperty>typescriptThreePlus=true</additionalProperty>
                             </additionalProperties>
-
                         </configuration>
                     </execution>
                     <execution>
@@ -156,7 +155,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>api/src/main/resources/swagger.json</inputSpec>
+                            <inputSpec>${basedir}/src/main/resources/swagger.json</inputSpec>
                             <generatorName>spring</generatorName>
                             <ignoreFileOverride>${project.basedir}/.openapi-generator-ignore</ignoreFileOverride>
                             <modelPackage>${project.groupId}.model</modelPackage>

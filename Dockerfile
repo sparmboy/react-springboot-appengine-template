@@ -8,7 +8,7 @@ COPY ui/ /home/app/ui/
 COPY webapp/ /home/app/webapp/
 COPY pom.xml /home/app
 WORKDIR /home/app
-RUN mvn clean package
+RUN mvn -X clean package
 
 #
 # Package stage
