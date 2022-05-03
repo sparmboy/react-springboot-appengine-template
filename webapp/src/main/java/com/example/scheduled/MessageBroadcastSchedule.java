@@ -28,7 +28,7 @@ public class MessageBroadcastSchedule {
     @Scheduled(cron = "0/5 * * * * *")
     public void sendMessage(){
         String topic = TOPIC_PREFIX + TOPIC_SESSION ;
-        log.info("Broadcasting message for session state on topic {} for user {}", topic);
+        log.debug("Broadcasting message {} for session state on topic {}",messages.get(index), topic);
         template.convertAndSend(topic, messages.get(index++));
         if( index == messages.size() ) {
             index=0;
