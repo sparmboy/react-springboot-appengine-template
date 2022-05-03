@@ -6,7 +6,7 @@ jasypt.encryptor.password: ${ENC_PASSWORD}
 #######################################
 # G O O G L E    C L O U D
 #######################################
-spring.cloud.gcp.projectId: enter-your-gcloud-project-id
+spring.cloud.gcp.projectId: !!!enter-your-gcloud-project-id!!!
 spring:
   cloud:
     config:
