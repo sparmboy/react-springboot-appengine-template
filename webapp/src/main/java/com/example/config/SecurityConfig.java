@@ -7,6 +7,8 @@ import com.example.security.oauth2.CustomOAuth2UserService;
 import com.example.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.example.security.oauth2.OAuth2AuthenticationFailureHandler;
 import com.example.security.oauth2.OAuth2AuthenticationSuccessHandler;
+import java.util.Arrays;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,6 +32,32 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
         prePostEnabled = true
 )
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    private final static List<String> PERMITTED_PATHS = Arrays.asList(
+        "/",
+        "/error",
+        "/favicon.ico",
+        "/static/**/*",
+        "/static/*",
+        "/api/oauth2",
+        "/api/oauth2/**",
+        "/home",
+        "/login",
+        "/*.json",
+        "/*.js",
+        "/**/*.png",
+        "/**/*.gif",
+        "/**/*.svg",
+        "/**/*.jpg",
+        "/**/*.html",
+        "/**/*.css",
+        "/**/*.js",
+        "/app/v2/api-docs",
+        "/api/v1/auth/**",
+        "/api/v1/orders/**",
+        "/websockets/**"
+    );
+
 
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
@@ -98,25 +126,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticationEntryPoint(new RestAuthenticationEntryPoint())
                 .and()
                 .authorizeRequests()
-                .antMatchers("/",
-                        "/error",
-                        "/favicon.ico",
-                        "/static/**/*",
-                        "/static/*",
-                        "/api/oauth2",
-                        "/home",
-                        "/login",
-                        "/*.json",
-                        "/*.js",
-                        "/**/*.png",
-                        "/**/*.gif",
-                        "/**/*.svg",
-                        "/**/*.jpg",
-                        "/**/*.html",
-                        "/**/*.css",
-                        "/**/*.js")
-                .permitAll()
-                .antMatchers("/api/v1/sessions/*/chargeUsed","/session/**","/api/v1/auth/**", "/api/oauth2/**","/api/v1/lamps/**")
+                .antMatchers(PERMITTED_PATHS.toArray(new String[] {}))
                 .permitAll()
                 .anyRequest()
                 .authenticated()
