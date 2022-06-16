@@ -19,8 +19,9 @@ Once built run the following:
 java -jar webapp/target/react-springboot-appengine-template-*.jar
 ```
 Once started you should be able to view the following:
-* swagger api documentation: [http://localhost:8080/app/swagger-ui/html](http://localhost:8080/app/swagger-ui.html)
-* swagger api definition json: [http://localhost:8080/app/v2/api-docs](http://localhost:8080/app/v2/api-docs)
+* The running app: [http://localhost:8080](http://localhost:8080)
+* swagger api documentation: [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+* swagger api definition json: [http://localhost:8080/v2/api-docs](http://localhost:8080/v2/api-docs)
 
 ## Running the UI
 ```shell
