@@ -24,7 +24,8 @@ Once started you should be able to view the following:
 
 ## Running the UI
 ```shell
-cd builtin npm run storybook
+cd ui 
+npm run storybook
 ```
 After a short while you should see a browser window open displaying a storybook app that allows you to test the UI components
 

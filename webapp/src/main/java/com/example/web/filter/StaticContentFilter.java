@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.example.config.SecurityConfig.SWAGGER_ROUTES;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 /**
@@ -40,10 +41,11 @@ public class StaticContentFilter implements Filter {
         String path = stripRoutes(request.getServletPath());
 
         boolean isApi = path.startsWith("/api");
+        boolean isSwagger = SWAGGER_ROUTES.stream().anyMatch(path::startsWith);
         boolean isSocket = path.startsWith(WebSocketConfig.TOPIC_PREFIX) || path.startsWith(WebSocketConfig.TOPIC_SESSION);
         boolean isResourceFile = !isApi && fileExtensions.stream().anyMatch(path::contains);
 
-        if (isApi || isSocket ) {
+        if (isApi || isSocket || isSwagger) {
             chain.doFilter(request, response);
         } else if (isResourceFile) {
             resourceToResponse("" + path, response);

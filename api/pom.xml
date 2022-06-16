@@ -99,7 +99,6 @@
                             <tasks>
                                 <delete>
                                     <fileset dir="${project.build.directory}/generated-sources" includes="**/HomeController.java" />
-                                    <fileset dir="${project.build.directory}/generated-sources" includes="**/OpenAPIDocumentationConfig.java" />
                                     <fileset dir="${project.build.directory}/generated-sources" includes="**/OpenAPI2SpringBoot.java" />
                                 </delete>
                             </tasks>
