@@ -9,7 +9,7 @@ mvn clean install
 ```
 
 ## Configuration
-* To utilise Google OAuth2.0 you will need to create a google account then go [here](https://console.cloud.google.com/apis/credentials) to generate a Client ID and Client Secret for your google project and then set them in the [application.yml](./webapp/src/main/resources/application.yml)
+* To utilise Google OAuth2.0 you will need to create a google account then go [here](https://console.cloud.google.com/apis/credentials) to generate a Client ID and Client Secret for your google project and then set them in the [application.yml](./webapp/src/main/resources/application.yml) (use the [PropertyEncryptionUtil](webapp/src/main/java/com/example/utils/PropertyEncryptionUtil.java) to encrypt it)
 * Create an environment variable called *ENC_PASSWORD* which stores your encryption password (keep this safe - obvs)
 * Create an encrypted password and set it as the *tokenSecret* in the [application.yml](./webapp/src/main/resources/application.yml)
 
