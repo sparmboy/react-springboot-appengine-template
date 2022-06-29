@@ -2,8 +2,9 @@ import {Button, createStyles, Grid, makeStyles, Paper, Theme, Typography} from "
 import {RouteComponentProps, RouterProps, useNavigate} from "@reach/router";
 import {IoLogoGoogle} from "react-icons/all";
 import { loginApi} from "../services/apiConfig";
-import {useEffect, useState} from "react";
-import {OauthUrl} from "@react-springboot-appengine-template/api/dist";
+import {Dispatch, useContext, useEffect, useState} from "react";
+import {LoginRequest, OauthUrl} from "@react-springboot-appengine-template/api/dist";
+import {AuthAction, AuthDispatchContext} from "../utils/auth/auth";
 
 interface LoginScreenProps extends RouteComponentProps<RouterProps> {
     authenticated: boolean
@@ -27,12 +28,29 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const LoginScreen: React.FC<LoginScreenProps & RouteComponentProps> = (props) => {
     const classes = useStyles();
+    const dispatch = useContext<Dispatch<AuthAction> | null>(AuthDispatchContext);
     const navigate = useNavigate();
     const [oauthUrls, setOauthUrls] = useState<OauthUrl[]>([]);
     const loadUrls = () => {
         loginApi.getOauthUrls().then(setOauthUrls);
     }
+    const [loginRequest] = useState<LoginRequest>({
+        email: '',
+        password: ''
+    });
+
     useEffect(loadUrls, []);
+
+    /**
+     * Call this to sign in and set the auth token
+     */
+    const onSignIn = () => {
+        loginApi.authenticateUser({loginRequest: loginRequest}).then((resp) => {
+            if (dispatch) {
+                dispatch({type: 'success', authState: {...resp, authenticated: true}});
+            }
+        });
+    }
 
     if (props.authenticated) {
         console.log('Authenticated props=',props);

@@ -1,4 +1,39 @@
 import {ACCESS_TOKEN, host} from "../../services/apiConfig";
+import React, {Dispatch} from "react";
+
+export type AuthState = {
+    authenticated: boolean,
+    name?:string,
+    imageUrl?:string,
+    roles?:string[],
+    accessToken?: string,
+}
+
+export const initialAuthState: AuthState = {
+    authenticated: false,
+};
+
+export const authReducer = (state: AuthState, action: AuthAction) => {
+    switch (action.type) {
+        case 'success':
+            if(action.authState.accessToken) {
+                localStorage.setItem(ACCESS_TOKEN, action.authState.accessToken);
+            }
+            return {...action.authState,authenticated:true};
+        case 'failure':
+            return {authenticated: false};
+        default:
+            throw new Error();
+    }
+}
+
+export type AuthAction =
+    | { type: 'success', authState: AuthState }
+    | { type: 'failure', error: string };
+
+export const AuthDispatchContext = React.createContext<Dispatch<AuthAction> | null>(null);
+export const AuthStateContext = React.createContext<AuthState>(initialAuthState);
+
 
 const request = (options:any):Promise<any> => {
     const headers = new Headers({

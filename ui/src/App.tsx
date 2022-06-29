@@ -1,11 +1,11 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useReducer} from 'react';
 import {Router} from "@reach/router";
 import {ProtectedRoute} from "./components/routes/ProtectedRoute";
-import {getCurrentUser} from "./utils/auth/auth";
 import HomeScreen from "./screens/HomeScreen";
 import LoginScreen from "./screens/LoginScreen";
 import {OAuth2RedirectHandler} from "./security/OAuth2RedirectHandler";
 import {MyOrdersScreen} from "./screens/MyOrdersScreen";
+import {AuthDispatchContext, authReducer, AuthStateContext, getCurrentUser, initialAuthState} from "./utils/auth/auth";
 
 export type AppProps = {
   hideLoader: () => void,
@@ -13,15 +13,18 @@ export type AppProps = {
 }
 
 function App(props: AppProps) {
-  const [authenticated, setAuthenticated] = useState<boolean>(false);
+    const [authState, authDispatch] = useReducer(authReducer, initialAuthState);
+
 
   const authenticate = () => {
     console.log('Attempting authentication...');
     getCurrentUser()
-        .then((resp) => {
+        .then((user) => {
           console.log('User is authenticated with current session');
           props.hideLoader();
-          setAuthenticated(true);
+            authDispatch({
+                type: 'success', authState: {...user, authenticated: true}
+            });
         })
         .catch(() => {
           console.log('User not authenticated');
@@ -30,15 +33,18 @@ function App(props: AppProps) {
     ;
   }
 
-  useEffect(authenticate, [props])
-  return <div>
+  useEffect(authenticate, [props]);
+
+  return <AuthStateContext.Provider value={authState}>
+      <AuthDispatchContext.Provider value={authDispatch}>
     <Router>
-      <HomeScreen path="/" authenticated={authenticated}/>
-      <LoginScreen path="/login" authenticated={authenticated}/>
+      <HomeScreen path="/" authenticated={authState.authenticated}/>
+      <LoginScreen path="/login" authenticated={authState.authenticated}/>
       <OAuth2RedirectHandler path="/oauth2"/>
-      <ProtectedRoute path="orders" isLoggedIn={authenticated} as={MyOrdersScreen}/>
+      <ProtectedRoute path="orders" isLoggedIn={authState.authenticated} as={MyOrdersScreen}/>
     </Router>
-  </div>
+      </AuthDispatchContext.Provider>
+  </AuthStateContext.Provider>
 }
 
 export default App;
