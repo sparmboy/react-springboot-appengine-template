@@ -27,7 +27,25 @@ spring:
             scope:
               - email
               - profile
-
+          apple:
+            provider: apple
+            clientName: Apple
+            keyId: <<YOUR_SERVICE_ID>>
+            teamId: <<YOUR_TEAM_ID>>
+            clientId: <<YOUR_CLIENT_ID>>
+            response-mode: form_post
+            authorization-grant-type: authorization_code
+            clientAuthenticationMethod: post
+            redirectUri: "{baseUrl}/api/oauth2/callback/{registrationId}"
+            scope:
+              - openid
+              - name
+              - email
+            provider:
+              apple:
+                authorization-uri: https://appleid.apple.com/auth/authorize?response_mode=form_post
+                token-uri: https://appleid.apple.com/auth/token
+                jwkSetUri: https://appleid.apple.com/auth/keys
 #######################################
 # A P P L I C A T I O N
 #######################################

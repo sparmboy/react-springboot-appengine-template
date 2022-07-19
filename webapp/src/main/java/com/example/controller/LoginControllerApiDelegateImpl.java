@@ -11,6 +11,7 @@ import com.example.model.OauthUrl;
 import com.example.model.SignupRequest;
 import com.example.security.TokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ResolvableType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -52,6 +53,10 @@ public class LoginControllerApiDelegateImpl implements LoginControllerApiDelegat
     Map<String, String> oauth2AuthenticationUrls
             = new HashMap<>();
 
+    @Value("${baseUrl}")
+    private String baseUrl;
+
+
     @Override
     public ResponseEntity<List<OauthUrl>> getOauthUrls() {
         Iterable<ClientRegistration> clientRegistrations = null;
@@ -64,7 +69,7 @@ public class LoginControllerApiDelegateImpl implements LoginControllerApiDelegat
 
         clientRegistrations.forEach(registration ->
                 oauth2AuthenticationUrls.put(registration.getClientName(),
-                        authorizationRequestBaseUri + "/" + registration.getRegistrationId()));
+                        authorizationRequestBaseUri + "/" + registration.getRegistrationId() + "?redirect_uri=" + baseUrl + "/oauth2" ));
 
         return ResponseEntity.ok(oauth2AuthenticationUrls.keySet().stream().map(k->new OauthUrl().key(k).href(oauth2AuthenticationUrls.get(k))).collect(Collectors.toList()) );
     }
