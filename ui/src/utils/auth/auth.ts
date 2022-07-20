@@ -3,14 +3,17 @@ import React, {Dispatch} from "react";
 
 export type AuthState = {
     authenticated: boolean,
+    authenticating: boolean,
     name?:string,
     imageUrl?:string,
     roles?:string[],
     accessToken?: string,
+    schoolId?: string
 }
 
 export const initialAuthState: AuthState = {
     authenticated: false,
+    authenticating: false
 };
 
 export const authReducer = (state: AuthState, action: AuthAction) => {
@@ -19,21 +22,23 @@ export const authReducer = (state: AuthState, action: AuthAction) => {
             if(action.authState.accessToken) {
                 localStorage.setItem(ACCESS_TOKEN, action.authState.accessToken);
             }
-            return {...action.authState,authenticated:true};
+            return {...action.authState,authenticated:true,authenticating: false};
         case 'failure':
-            return {authenticated: false};
+            return {authenticated: false,authenticating: false};
+        case 'authenticating':
+            return {authenticated: false,authenticating: true};
         default:
             throw new Error();
     }
 }
 
 export type AuthAction =
+    | { type: 'authenticating' }
     | { type: 'success', authState: AuthState }
     | { type: 'failure', error: string };
 
 export const AuthDispatchContext = React.createContext<Dispatch<AuthAction> | null>(null);
 export const AuthStateContext = React.createContext<AuthState>(initialAuthState);
-
 
 const request = (options:any):Promise<any> => {
     const headers = new Headers({

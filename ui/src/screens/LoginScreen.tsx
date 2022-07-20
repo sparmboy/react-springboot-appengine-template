@@ -1,94 +1,108 @@
-import {Button, createStyles, Grid, makeStyles, Paper, Theme, Typography} from "@material-ui/core";
+import {Button, Drawer, Grid, Paper, Typography} from "@mui/material";
 import {RouteComponentProps, RouterProps, useNavigate} from "@reach/router";
-import {IoLogoGoogle} from "react-icons/all";
+import {IoLogoApple, IoLogoGoogle, MdMail} from "react-icons/all";
 import { loginApi} from "../services/apiConfig";
-import {Dispatch, useContext, useEffect, useState} from "react";
-import {LoginRequest, OauthUrl} from "@react-springboot-appengine-template/api/dist";
-import {AuthAction, AuthDispatchContext} from "../utils/auth/auth";
+import { useEffect, useState} from "react";
+import {createStyles, makeStyles} from "@mui/styles";
+import {   ROUTE_SIGNUP} from "../constants/routes";
+import {OauthUrl} from "@react-springboot-appengine-template/api/dist";
 
 interface LoginScreenProps extends RouteComponentProps<RouterProps> {
-    authenticated: boolean
 }
 
-//const DEFAULT_AUTH_URLS = [{href: GOOGLE_AUTH_URL, key: 'Google'}];
-
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
     createStyles({
         root: {
             width: '100%',
             height: '100vh',
-            backgroundColor: theme.palette.grey.A100,
         },
         panel: {
+            borderRadius: '36px 36px 0px 0px !important',
             padding: 24,
-            margin: 4
+            height: '100%'
         }
     }),
 );
 
 const LoginScreen: React.FC<LoginScreenProps & RouteComponentProps> = (props) => {
     const classes = useStyles();
-    const dispatch = useContext<Dispatch<AuthAction> | null>(AuthDispatchContext);
+
     const navigate = useNavigate();
+    const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
     const [oauthUrls, setOauthUrls] = useState<OauthUrl[]>([]);
+
     const loadUrls = () => {
-        loginApi.getOauthUrls().then(setOauthUrls);
-    }
-    const [loginRequest] = useState<LoginRequest>({
-        email: '',
-        password: ''
-    });
-
-    useEffect(loadUrls, []);
-
-    /**
-     * Call this to sign in and set the auth token
-     */
-    const onSignIn = () => {
-        loginApi.authenticateUser({loginRequest: loginRequest}).then((resp) => {
-            if (dispatch) {
-                dispatch({type: 'success', authState: {...resp, authenticated: true}});
-            }
+        loginApi.getOauthUrls().then((urls) => {
+            setOauthUrls(urls);
+            setDrawerOpen(true);
         });
     }
 
-    if (props.authenticated) {
-        console.log('Authenticated props=',props);
-        if(props.path){
-            navigate(props.path);
-        }else {
-            navigate('/');
+    useEffect(loadUrls, []);
+
+    const getIconForAuth = (auth: string): JSX.Element => {
+        if (auth === 'Google') {
+            return <IoLogoGoogle/>
+        } else {
+            return <IoLogoApple/>
         }
     }
+
     return <Grid
         container
         direction="column"
-        justify="center"
-        alignItems="center"
-        className={classes.root}
+        justifyContent="center"
+        alignItems="stretch"
+        spacing={2}
     >
-        <Grid item>
+        <Grid item xs={1} sx={{marginTop: 16}}>
+            <img alt={"logo"} src={"/logo192.png"}/>
+        </Grid>
+
+        <Drawer
+            anchor={'bottom'}
+            open={drawerOpen}
+            PaperProps={{elevation: 0, style: {backgroundColor: "transparent"}}}
+        >
             <Paper elevation={2} className={classes.panel}>
                 <Grid
                     container
                     direction="column"
                     justifyContent="center"
-                    alignItems="center"
+                    alignItems="stretch"
                     spacing={4}
                 >
-                    <Grid item> <Typography variant={"subtitle1"}>To continue, please login with one of the following
-                        options:</Typography>
+
+                    <Grid item container justifyContent="center"> <Typography variant={"h4"}>Create an
+                        account</Typography>
                     </Grid>
-                    {oauthUrls.map((oa,i) => <Grid item key={i}>
-                        <Button key={oa.key} color={"primary"} variant={"contained"}
-                                startIcon={<IoLogoGoogle/>}
-                                href={`${oa.href.startsWith('/') ? '' : '/'}${oa.href+props.location?.search}`}>Login with {oa.key}</Button>
+                    {oauthUrls.map((oa, i) => <Grid item container justifyContent="center" key={i}>
+                        <Button key={oa.key} variant={"outlined"}
+                                size={"large"}
+                                startIcon={getIconForAuth(oa.key)}
+                                href={`${oa.href.startsWith('/') ? '' : '/'}${oa.href + props.location?.search}`}>Continue
+                            with {oa.key}</Button>
                     </Grid>)}
+
+                    <Grid item container justifyContent="center">
+                        <Button variant={"outlined"}
+                                size={"large"}
+                                onClick={() => navigate(ROUTE_SIGNUP)}
+                                startIcon={<MdMail/>}
+                        >Sign up with email</Button>
+                    </Grid>
+
+                    <Grid item container justifyContent="center"> <Typography variant={"body1"}>Already have an
+                        account? <a href={"/signin"}>Sign In</a></Typography></Grid>
+                    <Grid item container justifyContent="center"> <Typography variant={"caption"}
+                                                                              >By
+                        signing up you
+                        agree to our <a href={"/privacy-policy"}>Privacy Policy and Terms</a></Typography></Grid>
 
                 </Grid>
 
             </Paper>
-        </Grid>
+        </Drawer>
 
     </Grid>
 

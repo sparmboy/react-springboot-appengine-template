@@ -41,14 +41,16 @@ spring:
               - openid
               - name
               - email
-            provider:
-              apple:
-                authorization-uri: https://appleid.apple.com/auth/authorize?response_mode=form_post
-                token-uri: https://appleid.apple.com/auth/token
-                jwkSetUri: https://appleid.apple.com/auth/keys
+        provider:
+          apple:
+            authorization-uri: https://appleid.apple.com/auth/authorize?response_mode=form_post
+            token-uri: https://appleid.apple.com/auth/token
+            jwkSetUri: https://appleid.apple.com/auth/keys
 #######################################
 # A P P L I C A T I O N
 #######################################
+baseUrl: http://localhost:8080
+
 logging:
   level:
     root: ERROR
