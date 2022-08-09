@@ -4,7 +4,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import defaultTheme from "./themes/theme1";
-import {MuiThemeProvider} from "@material-ui/core";
+import {ThemeProvider} from "@mui/material/styles";
 
 const loader = document.querySelector('.loader');
 // @ts-ignore
@@ -13,16 +13,16 @@ const showLoader = () => loader.classList.remove('loader--hide');
 const hideLoader = () => loader.classList.add('loader--hide');
 
 ReactDOM.render(
-  <React.StrictMode>
-      <MuiThemeProvider theme={defaultTheme}>
+    <React.StrictMode>
+        <ThemeProvider theme={defaultTheme}>
 
-      <App
-        hideLoader={hideLoader}
-        showLoader={showLoader}
-    />
-      </MuiThemeProvider>
-  </React.StrictMode>,
-  document.getElementById('root')
+            <App
+                hideLoader={hideLoader}
+                showLoader={showLoader}
+            />
+        </ThemeProvider>
+    </React.StrictMode>,
+    document.getElementById('root')
 );
 
 // If you want to start measuring performance in your app, pass a function
