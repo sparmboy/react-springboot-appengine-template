@@ -1,14 +1,27 @@
 #
 # Build stage
 #
-FROM maven:3.6.0-jdk-11-slim AS build
-COPY api/ /home/app/api/
-RUN ls -ltR /home/app/api/*
-COPY ui/ /home/app/ui/
-COPY webapp/ /home/app/webapp/
-COPY pom.xml /home/app
-WORKDIR /home/app
-RUN mvn clean package
+FROM maven:alpine as build
+ENV HOME=/usr/app
+RUN mkdir -p $HOME
+WORKDIR $HOME
+
+ADD pom.xml $HOME
+ADD api/pom.xml $HOME/api/pom.xml
+ADD ui/pom.xml $HOME/ui/pom.xml
+ADD webapp/pom.xml $HOME/webapp/pom.xml
+
+RUN mvn -pl api verify --fail-never
+ADD api $HOME/api
+RUN mvn -pl api install
+
+RUN mvn -pl ui verify --fail-never
+ADD ui $HOME/ui
+RUN mvn -pl ui install
+
+RUN mvn -pl webapp verify --fail-never
+ADD webapp $HOME/webapp
+RUN mvn -pl api,ui,webapp package
 
 #
 # Package stage
