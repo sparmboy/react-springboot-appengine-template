@@ -1,20 +1,25 @@
 package com.example.web.filter;
 
+import static com.example.config.SecurityConfig.SWAGGER_ROUTES;
+import static com.example.config.WebSocketConfig.WEBSOCKETS_ENDPOINT;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+
 import com.example.config.WebSocketConfig;
 import com.google.api.client.util.IOUtils;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.stereotype.Component;
-
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-
-import static com.example.config.SecurityConfig.SWAGGER_ROUTES;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.stereotype.Component;
 
 /**
  * Allows you to run a spring REST API whilst also hosting
@@ -24,13 +29,13 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @Component
 public class StaticContentFilter implements Filter {
 
-    private List<String> fileExtensions = Arrays.asList("html", "js", "json", "csv", "css", "png", "svg", "eot", "ttf", "woff", "appcache", "jpg", "jpeg", "gif", "ico");
+    private List<String> fileExtensions = Arrays.asList("html", "js", "json", "csv", "css", "png", "svg", "eot", "ttf", "woff","'woff2", "appcache", "jpg", "jpeg", "gif", "ico");
 
     /**
      * This is the list of all route prefixes within your react routing
      * that a user might directly enter as a URL
      */
-    private List<String> ROUTES = Arrays.asList("/lamps/");
+    private List<String> ROUTES = Collections.singletonList("/lamps/");
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -42,7 +47,7 @@ public class StaticContentFilter implements Filter {
 
         boolean isApi = path.startsWith("/api");
         boolean isSwagger = SWAGGER_ROUTES.stream().anyMatch(path::startsWith);
-        boolean isSocket = path.startsWith(WebSocketConfig.TOPIC_PREFIX) || path.startsWith(WebSocketConfig.TOPIC_SESSION);
+        boolean isSocket = path.startsWith(WEBSOCKETS_ENDPOINT) || path.startsWith(WebSocketConfig.TOPIC_PREFIX) || path.startsWith(WebSocketConfig.TOPIC_MY_EVENT);
         boolean isResourceFile = !isApi && fileExtensions.stream().anyMatch(path::contains);
 
         if (isApi || isSocket || isSwagger) {
@@ -65,15 +70,13 @@ public class StaticContentFilter implements Filter {
 
 
     private void resourceToResponse(String resourcePath, HttpServletResponse response) throws IOException {
-        InputStream inputStream = new ClassPathResource(resourcePath).getInputStream();
-
-
-        if (inputStream == null) {
+        try {
+            InputStream inputStream = new ClassPathResource(resourcePath).getInputStream();
+            response.setHeader("Content-Type", fileExtensionToMimeType(resourcePath.substring(resourcePath.lastIndexOf(".")+1)));
+            IOUtils.copy(inputStream,response.getOutputStream());
+        } catch (IOException e) {
             response.sendError(NOT_FOUND.value(), NOT_FOUND.getReasonPhrase());
-            return;
         }
-        response.setHeader("Content-Type", fileExtensionToMimeType(resourcePath.substring(resourcePath.lastIndexOf(".")+1)));
-        IOUtils.copy(inputStream,response.getOutputStream());
     }
 
     private String fileExtensionToMimeType(String extension) {
@@ -86,6 +89,8 @@ public class StaticContentFilter implements Filter {
             case "ico": return "image/x-icon";
             case "png": return "image/png";
             case "jpeg": return "image/jpeg";
+            case "woff": return "text/css";
+            case "woff2": return "text/css";
 
         }
         throw new RuntimeException("File extenstion '." + extension + "' not supported");

@@ -1,5 +1,9 @@
 package com.example.config;
 
+import static com.example.config.WebSocketConfig.TOPIC_MY_EVENT;
+import static com.example.config.WebSocketConfig.TOPIC_PREFIX;
+import static com.example.config.WebSocketConfig.WEBSOCKETS_ENDPOINT;
+
 import com.example.security.CustomUserDetailsService;
 import com.example.security.RestAuthenticationEntryPoint;
 import com.example.security.TokenAuthenticationFilter;
@@ -91,7 +95,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         "/app/v2/api-docs",
         "/api/v1/auth/**",
         "/api/v1/orders/**",
-        "/websockets/**"
+        WEBSOCKETS_ENDPOINT +"/**",
+        TOPIC_PREFIX,
+        TOPIC_MY_EVENT
     );
 
 

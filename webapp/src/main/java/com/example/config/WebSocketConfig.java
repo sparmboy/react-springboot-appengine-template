@@ -10,8 +10,9 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
+    public static final String WEBSOCKETS_ENDPOINT = "/websockets";
     public static final String TOPIC_PREFIX = "/topic";
-    public static final String TOPIC_SESSION = "/session";
+    public static final String TOPIC_MY_EVENT = "/my_events";
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
@@ -21,6 +22,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint(TOPIC_SESSION + "/*").setAllowedOriginPatterns("http://localhost:3000").withSockJS();
+        registry.addEndpoint(WEBSOCKETS_ENDPOINT + "/*")
+            .setAllowedOriginPatterns("http://localhost:3000")
+            .withSockJS();
     }
+
 }

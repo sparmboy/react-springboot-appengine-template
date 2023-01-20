@@ -5,6 +5,8 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import defaultTheme from "./themes/theme1";
 import {ThemeProvider} from "@mui/material/styles";
+import {WS_ENDPOINT} from "./constants/websockets";
+import {StompSessionProvider} from "react-stomp-hooks";
 
 const loader = document.querySelector('.loader');
 // @ts-ignore
@@ -15,11 +17,12 @@ const hideLoader = () => loader.classList.add('loader--hide');
 ReactDOM.render(
     <React.StrictMode>
         <ThemeProvider theme={defaultTheme}>
-
+            <StompSessionProvider url={WS_ENDPOINT}>
             <App
                 hideLoader={hideLoader}
                 showLoader={showLoader}
             />
+            </StompSessionProvider>
         </ThemeProvider>
     </React.StrictMode>,
     document.getElementById('root')

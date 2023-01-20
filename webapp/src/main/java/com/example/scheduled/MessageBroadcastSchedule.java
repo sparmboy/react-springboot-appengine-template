@@ -1,37 +1,33 @@
 package com.example.scheduled;
 
+import static com.example.config.WebSocketConfig.TOPIC_MY_EVENT;
+import static com.example.config.WebSocketConfig.TOPIC_PREFIX;
+
+import com.example.domain.dto.WebSocketEventDTO;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
-import java.util.Arrays;
-import java.util.List;
-
-import static com.example.config.WebSocketConfig.TOPIC_PREFIX;
-import static com.example.config.WebSocketConfig.TOPIC_SESSION;
 
 @EnableScheduling
 @Component
 @Slf4j
 public class MessageBroadcastSchedule {
 
-    public final static List<String> messages = Arrays.asList("These","words","are","being","sent","over","a","socket");
+    private boolean status = false;
 
-    private int index = 0;
+    private final SimpMessagingTemplate template;
 
-    @Autowired
-    private SimpMessagingTemplate template;
+    public MessageBroadcastSchedule(SimpMessagingTemplate template) {
+        this.template = template;
+    }
 
-    @Scheduled(cron = "0/5 * * * * *")
+    @Scheduled(cron = "0/2 * * * * *")
     public void sendMessage(){
-        String topic = TOPIC_PREFIX + TOPIC_SESSION ;
-        log.debug("Broadcasting message {} for session state on topic {}",messages.get(index), topic);
-        template.convertAndSend(topic, messages.get(index++));
-        if( index == messages.size() ) {
-            index=0;
-        }
+        String topic = TOPIC_PREFIX + TOPIC_MY_EVENT ;
+        log.debug("Broadcasting message for session state on topic {}", topic);
+        template.convertAndSend(topic, new WebSocketEventDTO(status));
+        status = !status;
     }
 }
