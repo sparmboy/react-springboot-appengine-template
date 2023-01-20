@@ -4,12 +4,12 @@ import {
     LoginControllerApi,
     OrdersControllerApi
 } from "@react-springboot-appengine-template/api/dist";
+import {ACCESS_TOKEN} from "../constants/session";
 
 //export const host = ''; // Leave this as blank when building to serve within the spring boot app
 export const host = 'http://localhost:8080'; // Leave this as blank when building to serve within the spring boot app
 
 const API_PATH = '/api/v1';
-export const ACCESS_TOKEN = 'accessToken';
 
 let configurationParameters: ConfigurationParameters = {
     basePath: host + API_PATH,

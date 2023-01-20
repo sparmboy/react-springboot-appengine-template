@@ -1,17 +1,26 @@
-import { RouteComponentProps, useNavigate} from '@reach/router';
-import React, { FunctionComponent } from 'react';
+import React, {FC, FunctionComponent} from 'react';
+import {AuthState, AuthStateContext, doesUserHaveAnyOneOfTheseRoles} from "../../utils/auth/auth";
+import {UserRole} from "../../constants/roles";
+import {NavigateTo} from "../navigation/NavigateTo";
+import {RouteComponentProps} from "@reach/router";
+import {ROUTE_UNAUTHORISED} from "../../constants/routes";
 
-type Props = RouteComponentProps & { as: FunctionComponent; isLoggedIn: boolean };
-
-const ProtectedRoute: FunctionComponent<Props> = ({ as: Component, ...props }) => {
-    const { ...rest } = props;
-    const navigate = useNavigate();
-    if( !props.isLoggedIn ) {
-        console.log('User not authenticated so unable to access this route. Navigating to login...');
-        navigate('/login?uri=' + props.uri);
-    }
-
-    return <Component {...rest} />;
+export type ProtectedRouteProps = RouteComponentProps & { as: FunctionComponent;
+    permittedRoles: UserRole[],
+    unauthorisedRoute?: string
 };
 
-export { ProtectedRoute };
+export const ProtectedRoute: FC<ProtectedRouteProps> = ({ as: Component, ...props }) => {
+    const { ...rest } = props;
+    const isAuthorised = (authState: AuthState): boolean => {
+        return authState.user ? doesUserHaveAnyOneOfTheseRoles(authState.user, props.permittedRoles) : false;
+    }
+
+    return <AuthStateContext.Consumer>
+        {authState => <>
+            {isAuthorised(authState) && <Component {...rest} />}
+            {authState.user && !isAuthorised(authState) && <NavigateTo authState={authState} to={props.unauthorisedRoute ? props.unauthorisedRoute : ROUTE_UNAUTHORISED}/>}
+        </>
+        }
+    </AuthStateContext.Consumer>
+};

@@ -2,6 +2,7 @@ package com.example.domain;
 
 import com.example.domain.enums.AuthProvider;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.Collection;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -46,4 +47,13 @@ public class UserEntity {
     private AuthProvider provider;
 
     private String providerId;
+
+    @ManyToMany
+    @JoinTable(
+        name = "USER_TO_ROLES",
+        joinColumns = @JoinColumn(
+            name = "USER_ID", referencedColumnName = "ID"),
+        inverseJoinColumns = @JoinColumn(
+            name = "ROLE_ID", referencedColumnName = "ID"))
+    private Collection<UserRoleEntity> roles;
 }

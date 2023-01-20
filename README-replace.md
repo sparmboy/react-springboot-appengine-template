@@ -79,6 +79,14 @@ npm run storybook
 ```
 After a short while you should see a browser window open displaying a storybook app that allows you to test the UI components
 
+## Testing Docker
+You can test your docker script locally with the folloing command:
+```shell
+docker build -t maven-caching .
+```
+
+
+
 ![img.png](https://preview.redd.it/nate1bd6wzxz.jpg?auto=webp&s=c155ebd29641ac27a48b8a5a0b38c670467e9a02)
 
 _Good luck. We're all counting on you_

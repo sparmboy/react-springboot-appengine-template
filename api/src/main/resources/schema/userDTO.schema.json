@@ -1,0 +1,53 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://example.com/dto/responses/userDTO.schema.json",
+  "title": "User",
+  "type": "object",
+  "required": [
+    "email"
+  ],
+  "properties": {
+    "id": {
+      "$id": "#/properties/id",
+      "type": "string",
+      "title": "ID",
+      "description": "The UUID that identifies this counterparty"
+    },
+    "name": {
+      "$id": "#/properties/name",
+      "type": "string",
+      "title": "Name",
+      "description": "The full name of the user"
+    },
+    "email": {
+      "$id": "#/properties/email",
+      "type": "string",
+      "title": "Email",
+      "description": "The email address of the user"
+    },
+    "roles": {
+      "$id": "#/properties/roles",
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "title": "Roles",
+      "description": "The list of roles this user has"
+    },
+    "permissions": {
+      "$id": "#/properties/permissions",
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "title": "Permissions",
+      "description": "The list of permissions the user has"
+    },
+    "imageUrl": {
+      "$id": "#/properties/imageUrl",
+      "type": "string",
+      "title": "Image url",
+      "description": "The image url for the user"
+    }
+  }
+}

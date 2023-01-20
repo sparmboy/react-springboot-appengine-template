@@ -6,7 +6,8 @@
   "type": "object",
   "required": [
     "accessToken",
-    "tokenType"
+    "tokenType",
+    "user"
   ],
   "properties": {
     "accessToken": {
@@ -21,6 +22,9 @@
       "description": "The type of token",
       "type": "string",
       "default": "Bearer"
+    },
+    "user": {
+      "$ref": "../userDTO.schema.json"
     }
   }
 }

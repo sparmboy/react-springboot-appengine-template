@@ -14,7 +14,7 @@ import {Dispatch, useContext, useEffect, useState} from "react";
 import {loginApi} from "../services/apiConfig";
 import {ROUTE_HOME, ROUTE_LOGIN} from "../constants/routes";
 import {Alert} from "@mui/lab";
-import {AuthAction, AuthDispatchContext} from "../utils/auth/auth";
+import {AuthAction, AuthDispatchContext, getSavedUrlAndClear} from "../utils/auth/auth";
 import {LoginRequest, SignupRequest} from "@react-springboot-appengine-template/api/dist";
 
 const SignInScreen: React.FC<RouteComponentProps> = () => {
@@ -49,9 +49,16 @@ const SignInScreen: React.FC<RouteComponentProps> = () => {
         }
         loginApi.authenticateUser({loginRequest: loginRequest}).then((resp) => {
             if (dispatch) {
-                dispatch({type: 'success', authState: {...resp, authenticated: true, authenticating: false}});
+                dispatch({type: 'success', authState: {...resp, authenticating: false}});
             }
-            navigate(ROUTE_HOME);
+
+            const url = getSavedUrlAndClear();
+            if( url ) {
+                navigate(url);
+            }
+            else  {
+                navigate(ROUTE_HOME);
+            }
         },(err) => {
             if( err.status === 401) {
                 setErrorMessage('Unable to sign in. Please check your email address and password');

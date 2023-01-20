@@ -1,32 +1,33 @@
-import {ACCESS_TOKEN, host} from "../../services/apiConfig";
+import { host, loginApi} from "../../services/apiConfig";
 import React, {Dispatch} from "react";
+import {ACCESS_TOKEN, TARGET_URL} from "../../constants/session";
+import {UserRole} from "../../constants/roles";
+import {ROUTE_LOGIN} from "../../constants/routes";
+import {navigate} from "@reach/router";
+import {UserDTO} from "@react-springboot-appengine-template/api/dist";
 
 export type AuthState = {
-    authenticated: boolean,
     authenticating: boolean,
-    name?:string,
-    imageUrl?:string,
-    roles?:string[],
     accessToken?: string,
-    schoolId?: string
+    user?: UserDTO
 }
 
 export const initialAuthState: AuthState = {
-    authenticated: false,
     authenticating: false
 };
 
-export const authReducer = (state: AuthState, action: AuthAction) => {
+export const authReducer = (state: AuthState, action: AuthAction): AuthState => {
     switch (action.type) {
         case 'success':
             if(action.authState.accessToken) {
                 localStorage.setItem(ACCESS_TOKEN, action.authState.accessToken);
             }
-            return {...action.authState,authenticated:true,authenticating: false};
+            return {...action.authState,authenticating: false};
         case 'failure':
-            return {authenticated: false,authenticating: false};
+            localStorage.removeItem(ACCESS_TOKEN);
+            return {authenticating: false};
         case 'authenticating':
-            return {authenticated: false,authenticating: true};
+            return {authenticating: true};
         default:
             throw new Error();
     }
@@ -65,7 +66,7 @@ const request = (options:any):Promise<any> => {
 
 export const getAuthorizationHeader = ():string => ('Bearer ' + localStorage.getItem(ACCESS_TOKEN));
 
-export const getCurrentUser = (): Promise<any> => {
+export const getCurrentUser = (): Promise<UserDTO> => {
     if(!localStorage.getItem(ACCESS_TOKEN)) {
         return Promise.reject("No access token set.");
     }
@@ -73,5 +74,36 @@ export const getCurrentUser = (): Promise<any> => {
     return request({
         url: host + "/api/user/me",
         method: 'GET'
+    });
+}
+
+/**
+ * Takes the current URL and saves it to storage to be
+ * retrieved after log in
+ */
+export const saveCurrentUrl = () => {
+    localStorage.setItem(TARGET_URL, window.location.href );
+}
+
+/**
+ * Returns any saved URL from storage then clears it
+ */
+export const getSavedUrlAndClear = ():string|null => {
+    const url = localStorage.getItem(TARGET_URL);
+    localStorage.removeItem(TARGET_URL);
+    return url;
+}
+
+/**
+ * Returns true if the specified user has any one of the specified roles
+ * @param user  The user to check
+ * @param roles The list of roles to check against
+ */
+export const doesUserHaveAnyOneOfTheseRoles = (user: UserDTO, roles: UserRole[]):boolean => roles?.find(r=>user.roles?.indexOf(r as string) !== -1) !== undefined;
+
+export const signOut = () => {
+    loginApi.logOut().then(()=>{
+        localStorage.removeItem(ACCESS_TOKEN);
+        navigate(ROUTE_LOGIN);
     });
 }

@@ -3,6 +3,7 @@ package com.example.config;
 import com.example.security.CustomUserDetailsService;
 import com.example.security.RestAuthenticationEntryPoint;
 import com.example.security.TokenAuthenticationFilter;
+import com.example.security.oauth2.CustomOAuth2OidcUserService;
 import com.example.security.oauth2.CustomOAuth2UserService;
 import com.example.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.example.security.oauth2.OAuth2AuthenticationFailureHandler;
@@ -10,7 +11,9 @@ import com.example.security.oauth2.OAuth2AuthenticationSuccessHandler;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,6 +26,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
@@ -34,19 +38,47 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 )
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    public static final List<String> SWAGGER_ROUTES = Arrays.asList("/swagger-ui.html", "/webjars/springfox-swagger-ui", "/swagger-resources", "/null/swagger-resources", "/v2/api-docs");
+    public static final List<String> SWAGGER_ROUTES = Arrays.asList(
+        "/swagger-ui.html",
+        "/webjars/springfox-swagger-ui", "/swagger-resources", "/null/swagger-resources", "/v2/api-docs","/actuator");
 
+    public static final List<String> UNSECURED_PATHS = Arrays.asList("/home",
+        "/login",
+        "/signin",
+        "/signup",
+        "/signup-success",
+        "/oauth2",
+        "/api/user/**",
+        "/api/auth/**",
+        "/api/v1/messages/sms/status",
+        "/",
+        "/*.json",
+        "/*.js",
+        "/**/*.png",
+        "/**/*.gif",
+        "/**/*.svg",
+        "/**/*.jpg",
+        "/**/*.html",
+        "/**/*.css",
+        "/**/*.js",
+        "/error",
+        "/favicon.ico",
+        "/static/**/*",
+        "/static/*"
+    );
 
-    private final static List<String> PERMITTED_PATHS = Arrays.asList(
+    private final static List<String> SECURED_PATHS = Arrays.asList(
         "/",
         "/error",
         "/favicon.ico",
         "/static/**/*",
         "/static/*",
+        "/oauth2",
         "/api/oauth2",
         "/api/oauth2/**",
         "/home",
         "/login",
+        "/signin",
         "/*.json",
         "/*.js",
         "/**/*.png",
@@ -62,7 +94,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         "/websockets/**"
     );
 
-    public static final List<String> ANON_PATHS = SWAGGER_ROUTES.stream().map(r -> r + "/**").collect(Collectors.toList());
+
+    public static final List<String> ANON_PATHS = Stream.concat(
+        SWAGGER_ROUTES.stream().map(r -> r + "/**"),
+        UNSECURED_PATHS.stream()
+    ).collect(Collectors.toList());
 
 
     @Autowired
@@ -72,13 +108,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private CustomOAuth2UserService customOAuth2UserService;
 
     @Autowired
+    private CustomOAuth2OidcUserService customOAuth2OidcUserService;
+
+    @Autowired
     private OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 
     @Autowired
     private OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
 
     @Autowired
-    private HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
+    private ClientRegistrationRepository clientRegistrationRepository;
 
     @Bean
     public TokenAuthenticationFilter tokenAuthenticationFilter() {
@@ -114,6 +153,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
+    @Value("${spring.security.oauth2.client.registration.apple.keyId}")
+    private String appleKeyId;
+
+    @Value("${spring.security.oauth2.client.registration.apple.teamId}")
+    private String appleTeamId;
+
+    @Value("${spring.security.oauth2.client.registration.apple.clientId}")
+    private String clientId;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -135,7 +183,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers(ANON_PATHS.toArray(new String[] {}))
             .anonymous()
             .and().authorizeRequests()
-            .antMatchers(PERMITTED_PATHS.toArray(new String[] {}))
+            .antMatchers(SECURED_PATHS.toArray(new String[] {}))
             .permitAll()
             .anyRequest()
             .authenticated()
@@ -150,6 +198,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
             .userInfoEndpoint()
             .userService(customOAuth2UserService)
+            .oidcUserService(customOAuth2OidcUserService)
             .and()
             .successHandler(oAuth2AuthenticationSuccessHandler)
             .failureHandler(oAuth2AuthenticationFailureHandler);

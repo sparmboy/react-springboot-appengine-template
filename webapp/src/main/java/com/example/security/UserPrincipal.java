@@ -1,20 +1,16 @@
 package com.example.security;
 
 import com.example.domain.UserEntity;
+import java.util.Collection;
+import java.util.Map;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 
 @Data
 @Builder
@@ -24,23 +20,21 @@ public class UserPrincipal implements OAuth2User, UserDetails, OidcUser {
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
     private Map<String, Object> attributes;
+    private boolean enabled;
 
 
-
-    public static UserPrincipal create(UserEntity userEntity) {
-        List<GrantedAuthority> authorities = Collections.
-                singletonList(new SimpleGrantedAuthority("ROLE_USER"));
-
+    public static UserPrincipal create(UserEntity userEntity,Collection<? extends GrantedAuthority> authorities) {
         return UserPrincipal.builder()
                 .id(userEntity.getId())
                 .email(userEntity.getEmail())
                 .password(userEntity.getPassword())
                 .authorities(authorities)
+                .enabled(Boolean.TRUE.equals(userEntity.getEmailVerified()))
                 .build();
     }
 
-    public static UserPrincipal create(UserEntity userEntity, Map<String, Object> attributes) {
-        UserPrincipal userPrincipal = UserPrincipal.create(userEntity);
+    public static UserPrincipal create(UserEntity userEntity, Collection<? extends GrantedAuthority> authorities,Map<String, Object> attributes) {
+        UserPrincipal userPrincipal = UserPrincipal.create(userEntity,authorities);
         userPrincipal.setAttributes(attributes);
         return userPrincipal;
     }
@@ -72,7 +66,7 @@ public class UserPrincipal implements OAuth2User, UserDetails, OidcUser {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return enabled;
     }
 
     @Override

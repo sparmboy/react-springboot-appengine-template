@@ -1,7 +1,7 @@
 import {FC} from "react";
 import { RouteComponentProps, RouterProps, useNavigate} from "@reach/router";
-import {ACCESS_TOKEN} from "../services/apiConfig";
 import {ROUTE_HOME, ROUTE_LOGIN} from "../constants/routes";
+import {ACCESS_TOKEN} from "../constants/session";
 
 export const OAuth2RedirectHandler: FC<RouteComponentProps<RouterProps>> = (props) => {
     const navigate = useNavigate();
