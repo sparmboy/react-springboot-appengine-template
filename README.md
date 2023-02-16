@@ -14,7 +14,7 @@ Contains the following goodies out of the box:
 ## Steps
 1. Clone this repo
 ```bash
-git clone git@github.com:sparmboy/react-springboot-appengine-template.git mynewapp
+git clone https://github.com/sparmboy/react-springboot-appengine-template.git mynewapp
 ```
 2. Run the initialisation script to set you group and artifact details
 ```bash
