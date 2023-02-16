@@ -9,6 +9,7 @@
     </parent>
     <packaging>war</packaging>
     <properties>
+        <buildCommand>build</buildCommand>
     </properties>
     <profiles>
         <profile>
@@ -115,7 +116,7 @@
                             <goal>npm</goal>
                         </goals>
                         <configuration>
-                            <arguments>run build</arguments>
+                            <arguments>run ${buildCommand}</arguments>
                         </configuration>
                     </execution>
                 </executions>

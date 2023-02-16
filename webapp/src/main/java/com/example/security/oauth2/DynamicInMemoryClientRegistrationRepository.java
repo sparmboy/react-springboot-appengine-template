@@ -1,0 +1,89 @@
+package com.example.security.oauth2;
+
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.util.Assert;
+
+@Slf4j
+public class DynamicInMemoryClientRegistrationRepository implements ClientRegistrationRepository, Iterable<ClientRegistration> {
+    private final Map<String, ClientRegistration> registrations;
+    private final Map<String, ClientSecretGenerator> clientSecretGeneratorMap;
+    private String clientSecret = null;
+    private LocalDateTime lastUpdated = LocalDateTime.now();
+
+
+    public DynamicInMemoryClientRegistrationRepository(List<ClientRegistration> clientRegistrations, Map<String, ClientSecretGenerator> clientSecretGeneratorMap) {
+        this.clientSecretGeneratorMap = clientSecretGeneratorMap;
+        registrations = createRegistrationsMap(clientRegistrations);
+    }
+
+    private static Map<String, ClientRegistration> createRegistrationsMap(List<ClientRegistration> registrations) {
+        Assert.notEmpty(registrations, "registrations cannot be empty");
+        return toUnmodifiableConcurrentMap(registrations);
+    }
+
+    private static Map<String, ClientRegistration> toUnmodifiableConcurrentMap(List<ClientRegistration> registrations) {
+        ConcurrentHashMap<String, ClientRegistration> result = new ConcurrentHashMap();
+        Iterator var2 = registrations.iterator();
+
+        while(var2.hasNext()) {
+            ClientRegistration registration = (ClientRegistration)var2.next();
+            Assert.state(!result.containsKey(registration.getRegistrationId()), () -> {
+                return String.format("Duplicate key %s", registration.getRegistrationId());
+            });
+            result.put(registration.getRegistrationId(), registration);
+        }
+
+        return Collections.unmodifiableMap(result);
+    }
+
+
+    public ClientRegistration findByRegistrationId(String registrationId) {
+        Assert.hasText(registrationId, "registrationId cannot be empty");
+
+        ClientRegistration immutableClientRegistration = this.registrations.get(registrationId);
+
+        try {
+            log.trace("*** Registration: {}",registrationId );
+            if( clientSecret == null || LocalDateTime.now().isAfter(lastUpdated.plusMinutes(AppleClientSecretGenerator.EXPIRY_TIME_IN_MINS))  ) {
+                log.info("Generating new client secret");
+                clientSecret = clientSecretGeneratorMap.get(registrationId) != null ?  clientSecretGeneratorMap.get(registrationId).generateClientSecret() : immutableClientRegistration.getClientSecret();
+                lastUpdated = LocalDateTime.now();
+            }
+            log.trace("**** {}",clientSecret);
+
+            return ClientRegistration
+                .withRegistrationId(registrationId)
+                .clientId(immutableClientRegistration.getClientId())
+                .authorizationGrantType(immutableClientRegistration.getAuthorizationGrantType())
+                .clientName(immutableClientRegistration.getClientName())
+                .clientAuthenticationMethod(immutableClientRegistration.getClientAuthenticationMethod())
+                .clientSecret(clientSecret)
+                .redirectUri(immutableClientRegistration.getRedirectUri())
+                .scope(immutableClientRegistration.getScopes())
+                .providerConfigurationMetadata(immutableClientRegistration.getProviderDetails().getConfigurationMetadata())
+                .issuerUri(immutableClientRegistration.getProviderDetails().getIssuerUri())
+                .jwkSetUri(immutableClientRegistration.getProviderDetails().getJwkSetUri())
+                .tokenUri(immutableClientRegistration.getProviderDetails().getTokenUri())
+                .authorizationUri(immutableClientRegistration.getProviderDetails().getAuthorizationUri())
+                .userInfoUri(immutableClientRegistration.getProviderDetails().getUserInfoEndpoint().getUri())
+                .userInfoAuthenticationMethod(immutableClientRegistration.getProviderDetails().getUserInfoEndpoint().getAuthenticationMethod())
+                .userNameAttributeName(immutableClientRegistration.getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName())
+                .build();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed while generating client secret: " + e,e);
+        }
+
+    }
+
+    public Iterator<ClientRegistration> iterator() {
+        return this.registrations.values().iterator();
+    }
+}

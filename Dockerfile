@@ -7,7 +7,7 @@ COPY ui/pom.xml ui/pom.xml
 COPY webapp/pom.xml webapp/pom.xml
 
 COPY pom.xml .
-RUN mvn -B -e -C org.apache.maven.plugins:maven-dependency-plugin:3.1.2:go-offline
+RUN mvn -DbuildCommand=build-docker -B -e -C org.apache.maven.plugins:maven-dependency-plugin:3.1.2:go-offline
 
 # if you have modules that depends each other, you may use -DexcludeArtifactIds as follows
 # RUN mvn -B -e -C org.apache.maven.plugins:maven-dependency-plugin:3.1.2:go-offline -DexcludeArtifactIds=module1
@@ -29,10 +29,10 @@ COPY webapp/src /opt/app/webapp/src
 
 # use -o (--offline) if you didn't need to exclude artifacts.
 # if you have excluded artifacts, then remove -o flag
-RUN mvn -B -e clean install -DskipTests=true
+RUN mvn -DbuildCommand=build-docker -B -e clean install -DskipTests=true
 
 # At this point, BUILDER stage should have your .jar or whatever in some path
 FROM openjdk:8-alpine
 COPY --from=builder opt/app/webapp/target/*.jar /usr/local/lib/app.jar
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","/usr/local/lib/app.jar"]
+ENTRYPOINT ["java","-jar","-Dspring.profiles.active=docker","/usr/local/lib/app.jar"]

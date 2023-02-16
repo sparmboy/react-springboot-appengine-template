@@ -5,9 +5,14 @@ import {
     OrdersControllerApi
 } from "@react-springboot-appengine-template/api/dist";
 import {ACCESS_TOKEN} from "../constants/session";
+import {environmentConfig} from "../env/environment";
 
-//export const host = ''; // Leave this as blank when building to serve within the spring boot app
-export const host = 'http://localhost:8080'; // Leave this as blank when building to serve within the spring boot app
+if( !environmentConfig ) {
+    throw new Error("No environment config defined! Please define an environment variable ENV_CONFIG_JSON that points to a valid config file");
+}
+
+export const host = environmentConfig.host;
+console.info('App Host set to ',host);
 
 const API_PATH = '/api/v1';
 

@@ -15,7 +15,8 @@ public class AppleOAuth2OidcUserInfo extends OAuth2UserInfo {
 
     @Override
     public String getName() {
-        return (String) attributes.get("name");
+        String name = (String) attributes.get("name");
+        return name == null ? getEmail() : name;
     }
 
     @Override

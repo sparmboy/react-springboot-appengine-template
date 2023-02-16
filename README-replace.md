@@ -9,9 +9,25 @@ mvn clean install
 ```
 
 ## Configuration
-* To utilise Google OAuth2.0 you will need to create a google account then go [here](https://console.cloud.google.com/apis/credentials) to generate a Client ID and Client Secret for your google project and then set them in the [application.yml](./webapp/src/main/resources/application.yml) (use the [PropertyEncryptionUtil](webapp/src/main/java/com/example/utils/PropertyEncryptionUtil.java) to encrypt it)
-* Create an environment variable called *ENC_PASSWORD* which stores your encryption password (keep this safe - obvs)
-* Create an encrypted password and set it as the *tokenSecret* in the [application.yml](./webapp/src/main/resources/application.yml)
+1. To utilise Google OAuth2.0 you will need to create a google account then go [here](https://console.cloud.google.com/apis/credentials) 
+2. Click Create Credentials and select Oauth client ID
+![img.png](docs/google-01.png)
+3. Select External then click Create
+![img_1.png](docs/google-02.png)
+4. Fill in the details of your domain / server:
+![img_2.png](docs/google-03.png)
+5. Add the scope for the users email
+![img_3.png](docs/google-04.png)
+6. Add test users:
+![img_4.png](docs/google-05.png)
+7. Go back to the dashboard and create OAuth client ID again (confusing yes I know)
+![img_5.png](docs/google-06.png)
+8. Select Web application and add the redirect URIs using the following paths but replace your server domain details:
+![img_6.png](docs/google-07.png)
+![img_8.png](docs/google-08.png)
+9. Set the client ID and Client secret  in the [application.yml](./webapp/src/main/resources/application.yml) (use the [PropertyEncryptionUtil](webapp/src/main/java/com/example/utils/PropertyEncryptionUtil.java) to encrypt it)
+10. Create an environment variable called *ENC_PASSWORD* which stores your encryption password (keep this safe - obvs)
+11. Create an encrypted password and set it as the *tokenSecret* in the [application.yml](./webapp/src/main/resources/application.yml)
 
 # Apple
 To utilise Apple OAuth2.0, then strap in buster, it's gonna get rough:

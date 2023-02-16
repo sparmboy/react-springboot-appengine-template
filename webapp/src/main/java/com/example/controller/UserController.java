@@ -3,6 +3,7 @@ package com.example.controller;
 import com.example.dao.repository.UserRepository;
 import com.example.domain.UserEntity;
 import com.example.domain.exceptions.ResourceNotFoundException;
+import com.example.domain.exceptions.UserNotAuthenticatedException;
 import com.example.domain.mappers.UserMapper;
 import com.example.model.UserDTO;
 import com.example.security.CurrentUser;
@@ -22,7 +23,10 @@ public class UserController {
     }
 
     @GetMapping("/api/user/me")
-    public UserDTO getCurrentUser(@CurrentUser UserPrincipal userPrincipal) {
+    public UserDTO getCurrentUser(@CurrentUser UserPrincipal userPrincipal) throws UserNotAuthenticatedException {
+        if( userPrincipal == null ) {
+            throw new UserNotAuthenticatedException();
+        }
         return userMapper.map(
             userRepository.findById(userPrincipal.getId())
                 .orElseThrow(() -> new ResourceNotFoundException(UserEntity.class, "id", userPrincipal.getId()))

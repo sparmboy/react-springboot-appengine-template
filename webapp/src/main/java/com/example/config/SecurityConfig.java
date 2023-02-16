@@ -187,7 +187,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
             .authorizeRequests()
             .antMatchers(ANON_PATHS.toArray(new String[] {}))
-            .anonymous()
+            .permitAll()
             .and().authorizeRequests()
             .antMatchers(SECURED_PATHS.toArray(new String[] {}))
             .permitAll()
