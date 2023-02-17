@@ -2,15 +2,18 @@ package com.example.security;
 
 import com.example.config.ApplicationConfig;
 import com.example.domain.exceptions.OAuth2AuthenticationProcessingException;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.SignatureException;
+import io.jsonwebtoken.UnsupportedJwtException;
+import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Service;
-
-import java.util.Date;
 
 @Service
 @Slf4j
@@ -59,15 +62,15 @@ public class TokenProvider {
             Jwts.parser().setSigningKey(appProperties.getAuth().getTokenSecret()).parseClaimsJws(authToken);
             return true;
         } catch (SignatureException ex) {
-            log.error("Invalid JWT signature");
+            log.error("Invalid JWT signature: {}",ex.getLocalizedMessage(),ex);
         } catch (MalformedJwtException ex) {
-            log.error("Invalid JWT token");
+            log.error("Invalid JWT token: {}",ex.getLocalizedMessage(),ex);
         } catch (ExpiredJwtException ex) {
-            log.error("Expired JWT token");
+            log.error("Expired JWT token: {}",ex.getLocalizedMessage(),ex);
         } catch (UnsupportedJwtException ex) {
-            log.error("Unsupported JWT token");
+            log.error("Unsupported JWT token: {}",ex.getLocalizedMessage(),ex);
         } catch (IllegalArgumentException ex) {
-            log.error("JWT claims string is empty.");
+            log.error("JWT claims string is empty: {}",ex.getLocalizedMessage(),ex);
         }
         return false;
     }
