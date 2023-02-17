@@ -61,8 +61,9 @@ public class AppleClientSecretGenerator implements ClientSecretGenerator {
     public Map.Entry<String, LocalDateTime> generateClientSecret() throws Exception {
         final PrivateKey key = getPrivateKey();
         long nowSeconds = System.currentTimeMillis();
+        long millisToExtendBy = (EXPIRY_TIME_IN_MINS * 60 * 1000); // Change the time as you wish;
         Date now = new Date(nowSeconds);
-        long expMillis = nowSeconds + (EXPIRY_TIME_IN_MINS * 60 * 1000); // Change the time as you wish
+        long expMillis = nowSeconds + millisToExtendBy;
         Date exp = new Date(expMillis);
 
         log.info("Generating new Apple secret key with expiry {}", exp);
@@ -79,7 +80,7 @@ public class AppleClientSecretGenerator implements ClientSecretGenerator {
                 .setExpiration(exp)
                 .signWith(key, SignatureAlgorithm.ES256)
                 .compact(),
-            LocalDateTime.now().plus(Duration.ofMillis(expMillis))
+            LocalDateTime.now().plus(Duration.ofMillis(millisToExtendBy))
         );
     }
 }
