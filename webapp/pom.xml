@@ -22,7 +22,7 @@
         <spring-boot-starter-oauth2-client.version>2.5.1</spring-boot-starter-oauth2-client.version>
         <spring-security-oauth2-client.version>5.4.2</spring-security-oauth2-client.version>
         <jjwt.version>0.10.7</jjwt.version>
-        <lombok.version>1.18.16</lombok.version>
+        <lombok.version>1.18.22</lombok.version>
         <validation-api.version>2.0.1.Final</validation-api.version>
         <mapstruct.version>1.4.2.Final</mapstruct.version>
 
