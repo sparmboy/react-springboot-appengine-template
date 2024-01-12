@@ -1,5 +1,4 @@
 import React, {useEffect, useReducer} from 'react';
-import {navigate, Router} from "@reach/router";
 import HomeScreen from "./screens/HomeScreen";
 import LoginScreen from "./screens/LoginScreen";
 import {OAuth2RedirectHandler} from "./security/OAuth2RedirectHandler";
@@ -26,6 +25,7 @@ import {ProtectedRoute} from "./components/routes/ProtectedRoute";
 import AdminScreen from "./screens/AdminScreen";
 import {ROLE_ADMIN} from "./constants/roles";
 import UnauthorisedScreen from "./screens/UnauthorisedScreen";
+import {Routes, useNavigate} from "react-router";
 
 export type AppProps = {
     hideLoader: () => void,
@@ -34,6 +34,7 @@ export type AppProps = {
 
 function App(props: AppProps) {
     const [authState, authDispatch] = useReducer(authReducer, initialAuthState);
+    const navigate = useNavigate();
 
     const authenticate = () => {
         console.log('Attempting authentication...');
@@ -82,11 +83,11 @@ function App(props: AppProps) {
             })
         ;
     }
-    useEffect(authenticate, [props]);
+    useEffect(authenticate, [props,authState,navigate]);
 
     return <AuthStateContext.Provider value={authState}>
         <AuthDispatchContext.Provider value={authDispatch}>
-            <Router>
+            <Routes>
                 <HomeScreen path={ROUTE_HOME}/>
                 <LoginScreen path={ROUTE_LOGIN} />
                 <SignUpScreen path={ROUTE_SIGNUP}/>
@@ -99,7 +100,7 @@ function App(props: AppProps) {
 
                 <UnauthorisedScreen path={`${ROUTE_UNAUTHORISED}`}/>
 
-            </Router>
+            </Routes>
         </AuthDispatchContext.Provider>
     </AuthStateContext.Provider>
 }

@@ -2,13 +2,14 @@ import {
     Button,
     Grid, Typography
 } from "@mui/material";
-import {navigate, RouteComponentProps} from "@reach/router";
+import {RouteProps, useNavigate} from "react-router";
 import "./HomeScreen.css";
-import {GiHalt} from "react-icons/all";
+import {GiHalt} from "react-icons/gi";
 import {ROUTE_HOME} from "../constants/routes";
 
 
-const UnauthorisedScreen: React.FC<RouteComponentProps> = () => {
+const UnauthorisedScreen: React.FC<RouteProps> = () => {
+    const navigate = useNavigate();
     const onHome = () => navigate(ROUTE_HOME);
 
     return <Grid

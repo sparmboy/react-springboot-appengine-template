@@ -1,13 +1,14 @@
 import {Button, Drawer, Grid, Paper, Typography} from "@mui/material";
-import {RouteComponentProps, RouterProps, useNavigate} from "@reach/router";
-import {IoLogoApple, IoLogoGoogle, MdMail} from "react-icons/all";
+import {RouteProps, useNavigate} from "react-router";
+import {IoLogoApple, IoLogoGoogle } from "react-icons/io";
+import { MdMail} from "react-icons/md";
 import { loginApi} from "../services/apiConfig";
 import { useEffect, useState} from "react";
 import {createStyles, makeStyles} from "@mui/styles";
 import {   ROUTE_SIGNUP} from "../constants/routes";
 import {OauthUrl} from "@react-springboot-appengine-template/api/dist";
 
-interface LoginScreenProps extends RouteComponentProps<RouterProps> {
+interface LoginScreenProps  {
 }
 
 const useStyles = makeStyles(() =>
@@ -24,7 +25,7 @@ const useStyles = makeStyles(() =>
     }),
 );
 
-const LoginScreen: React.FC<LoginScreenProps & RouteComponentProps> = (props) => {
+const LoginScreen: React.FC<LoginScreenProps & RouteProps> = (props) => {
     const classes = useStyles();
 
     const navigate = useNavigate();
@@ -80,7 +81,7 @@ const LoginScreen: React.FC<LoginScreenProps & RouteComponentProps> = (props) =>
                         <Button key={oa.key} variant={"outlined"}
                                 size={"large"}
                                 startIcon={getIconForAuth(oa.key)}
-                                href={`${oa.href.startsWith('/') ? '' : '/'}${oa.href + props.location?.search}`}>Continue
+                                href={`${oa.href.startsWith('/') ? '' : '/'}${oa.href + props.path?.search}`}>Continue
                             with {oa.key}</Button>
                     </Grid>)}
 

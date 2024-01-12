@@ -2,10 +2,10 @@ import React, {FC, FunctionComponent} from 'react';
 import {AuthState, AuthStateContext, doesUserHaveAnyOneOfTheseRoles} from "../../utils/auth/auth";
 import {UserRole} from "../../constants/roles";
 import {NavigateTo} from "../navigation/NavigateTo";
-import {RouteComponentProps} from "@reach/router";
 import {ROUTE_UNAUTHORISED} from "../../constants/routes";
+import {RouteProps} from "react-router";
 
-export type ProtectedRouteProps = RouteComponentProps & { as: FunctionComponent;
+export type ProtectedRouteProps = RouteProps & { as: FunctionComponent;
     permittedRoles: UserRole[],
     unauthorisedRoute?: string
 };

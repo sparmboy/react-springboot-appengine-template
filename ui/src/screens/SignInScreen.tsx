@@ -8,8 +8,9 @@ import {
     Typography,
     useTheme
 } from "@mui/material";
-import {RouteComponentProps, useNavigate} from "@reach/router";
-import {IoArrowBack, MdVisibility, MdVisibilityOff} from "react-icons/all";
+import {RouteProps, useNavigate} from "react-router";
+import { MdVisibility, MdVisibilityOff} from "react-icons/md";
+import {IoArrowBack} from "react-icons/io5"
 import {Dispatch, useContext, useEffect, useState} from "react";
 import {loginApi} from "../services/apiConfig";
 import {ROUTE_HOME, ROUTE_LOGIN} from "../constants/routes";
@@ -17,7 +18,7 @@ import {Alert} from "@mui/lab";
 import {AuthAction, AuthDispatchContext, getSavedUrlAndClear} from "../utils/auth/auth";
 import {LoginRequest, SignupRequest} from "@react-springboot-appengine-template/api/dist";
 
-const SignInScreen: React.FC<RouteComponentProps> = () => {
+const SignInScreen: React.FC<RouteProps> = () => {
     const theme = useTheme();
     const navigate = useNavigate();
     const dispatch = useContext<Dispatch<AuthAction> | null>(AuthDispatchContext);
