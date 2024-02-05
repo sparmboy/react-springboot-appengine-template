@@ -31,7 +31,7 @@
     "test": "jest",
     "eject": "react-scripts eject",
     "storybook": "storybook dev -p 6006",
-    "storybook-silent": "storybook dev -p 6006 --silent",
+    "storybook-silent": "storybook dev -p 6006 -- --silent",
     "build-storybook": "storybook build",
     "test-storybook": "test-storybook",
     "storybook:test": "test-storybook --coverage --coverageDirectory .storybook && nyc report --reporter=text -t coverage/storybook --report-dir .storybook"
