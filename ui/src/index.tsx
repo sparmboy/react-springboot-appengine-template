@@ -7,6 +7,7 @@ import defaultTheme from "./themes/theme1";
 import {ThemeProvider} from "@mui/material/styles";
 import {WS_ENDPOINT} from "./constants/websockets";
 import {StompSessionProvider} from "react-stomp-hooks";
+import {BrowserRouter} from "react-router-dom";
 
 const loader = document.querySelector('.loader');
 // @ts-ignore
@@ -15,6 +16,7 @@ const showLoader = () => loader.classList.remove('loader--hide');
 const hideLoader = () => loader.classList.add('loader--hide');
 
 ReactDOM.render(
+    <BrowserRouter>
     <React.StrictMode>
         <ThemeProvider theme={defaultTheme}>
             <StompSessionProvider url={WS_ENDPOINT}>
@@ -24,7 +26,9 @@ ReactDOM.render(
             />
             </StompSessionProvider>
         </ThemeProvider>
-    </React.StrictMode>,
+    </React.StrictMode>
+    </BrowserRouter>,
+
     document.getElementById('root')
 );
 

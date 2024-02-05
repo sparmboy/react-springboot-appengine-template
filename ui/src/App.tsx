@@ -25,7 +25,7 @@ import {ProtectedRoute} from "./components/routes/ProtectedRoute";
 import AdminScreen from "./screens/AdminScreen";
 import {ROLE_ADMIN} from "./constants/roles";
 import UnauthorisedScreen from "./screens/UnauthorisedScreen";
-import {Routes, useNavigate} from "react-router";
+import {Route,Routes, useNavigate} from "react-router";
 
 export type AppProps = {
     hideLoader: () => void,
@@ -83,22 +83,22 @@ function App(props: AppProps) {
             })
         ;
     }
-    useEffect(authenticate, [props,authState,navigate]);
+    useEffect(authenticate, [props]);
 
     return <AuthStateContext.Provider value={authState}>
         <AuthDispatchContext.Provider value={authDispatch}>
             <Routes>
-                <HomeScreen path={ROUTE_HOME}/>
-                <LoginScreen path={ROUTE_LOGIN} />
-                <SignUpScreen path={ROUTE_SIGNUP}/>
-                <SignInScreen path={ROUTE_SIGNIN}/>
-                <SuccessScreen path={ROUTE_SUCCESS}/>
-                <OAuth2RedirectHandler path="/oauth2"/>
+                <Route path={ROUTE_HOME} element={<HomeScreen/>}/>
+                <Route element={<LoginScreen/>} path={ROUTE_LOGIN} />
+                <Route element={<SignUpScreen/>} path={ROUTE_SIGNUP}/>
+                <Route element={<SignInScreen/>} path={ROUTE_SIGNIN}/>
+                <Route element={<SuccessScreen/>} path={ROUTE_SUCCESS}/>
+                <Route element={<OAuth2RedirectHandler/>} path="/oauth2"/>
 
                 {/*Admin Role*/}
-                <ProtectedRoute path={ROUTE_ADMIN} permittedRoles={[ROLE_ADMIN]} as={AdminScreen} />
+                <Route path={ROUTE_ADMIN} element={<ProtectedRoute permittedRoles={[ROLE_ADMIN]} as={AdminScreen}/>} />
 
-                <UnauthorisedScreen path={`${ROUTE_UNAUTHORISED}`}/>
+                <Route element={<UnauthorisedScreen/>} path={`${ROUTE_UNAUTHORISED}`}/>
 
             </Routes>
         </AuthDispatchContext.Provider>
