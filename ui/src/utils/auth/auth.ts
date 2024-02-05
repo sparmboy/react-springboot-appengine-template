@@ -3,8 +3,8 @@ import React, {Dispatch} from "react";
 import {ACCESS_TOKEN, TARGET_URL} from "../../constants/session";
 import {UserRole} from "../../constants/roles";
 import {ROUTE_LOGIN} from "../../constants/routes";
-import {navigate} from "@reach/router";
 import {UserDTO} from "@react-springboot-appengine-template/api/dist";
+import {NavigateFunction} from "react-router/dist/lib/hooks";
 
 export type AuthState = {
     authenticating: boolean,
@@ -101,7 +101,7 @@ export const getSavedUrlAndClear = ():string|null => {
  */
 export const doesUserHaveAnyOneOfTheseRoles = (user: UserDTO, roles: UserRole[]):boolean => roles?.find(r=>user.roles?.indexOf(r as string) !== -1) !== undefined;
 
-export const signOut = () => {
+export const signOut = (navigate:NavigateFunction) => {
     loginApi.logOut().then(()=>{
         localStorage.removeItem(ACCESS_TOKEN);
         navigate(ROUTE_LOGIN);

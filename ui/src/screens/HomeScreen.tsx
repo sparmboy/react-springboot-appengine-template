@@ -1,4 +1,4 @@
-import {RouteComponentProps, RouterProps, useNavigate} from "@reach/router";
+import {RouteProps, useNavigate} from "react-router";
 import {
     Button,
     Grid,
@@ -8,14 +8,15 @@ import {useContext, useEffect} from "react";
 import {ROUTE_ADMIN, ROUTE_LOGIN} from "../constants/routes";
 import {AuthState, AuthStateContext, doesUserHaveAnyOneOfTheseRoles, signOut} from "../utils/auth/auth";
 import {ROLE_ADMIN} from "../constants/roles";
-import {GoSignOut, GrUserAdmin} from "react-icons/all";
+import {GoSignOut} from "react-icons/go";
+import { GrUserAdmin} from "react-icons/gr";
 
 
 
-interface HomeScreenProps extends RouteComponentProps<RouterProps> {
+interface HomeScreenProps {
 }
 
-const HomeScreen: React.FC<HomeScreenProps & RouteComponentProps> = () => {
+const HomeScreen: React.FC<HomeScreenProps & RouteProps> = () => {
 
     const authState = useContext<AuthState>(AuthStateContext);
 
@@ -31,7 +32,7 @@ const HomeScreen: React.FC<HomeScreenProps & RouteComponentProps> = () => {
             }
         }
 
-    },[authState])
+    },[authState,navigate])
 
     const onAdmin = () => navigate(`${ROUTE_ADMIN}`);
 
@@ -64,7 +65,7 @@ const HomeScreen: React.FC<HomeScreenProps & RouteComponentProps> = () => {
 
         <Grid item container justifyContent="center" alignItems={"stretch"} >
             <Button variant={"contained"}
-                    onClick={signOut}
+                    onClick={() => signOut(navigate)}
                     startIcon={<GoSignOut/>}
                     sx={{
                         width: '100%',

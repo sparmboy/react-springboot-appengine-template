@@ -1,4 +1,4 @@
-import {RouteComponentProps, RouterProps} from "@reach/router";
+import {RouteProps} from "react-router";
 import {
     Grid, Paper, Switch, Typography,
 } from "@mui/material";
@@ -10,10 +10,10 @@ import {WS_TOPIC_MY_EVENTS} from "../constants/websockets";
 import {useSubscription} from "react-stomp-hooks";
 
 
-interface AdminScreenProps extends RouteComponentProps<RouterProps> {
+interface AdminScreenProps  {
 }
 
-const AdminScreen: React.FC<AdminScreenProps & RouteComponentProps> = () => {
+const AdminScreen: React.FC<AdminScreenProps & RouteProps> = () => {
 
     const [status,setStatus] = useState<boolean>(false);
 

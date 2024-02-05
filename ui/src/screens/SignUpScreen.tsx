@@ -8,8 +8,9 @@ import {
     Typography,
     useTheme
 } from "@mui/material";
-import {RouteComponentProps,  useNavigate} from "@reach/router";
-import {IoArrowBack,  MdVisibility, MdVisibilityOff} from "react-icons/all";
+import {RouteProps, useNavigate} from "react-router";
+import {IoArrowBack} from "react-icons/io5";
+import {  MdVisibility, MdVisibilityOff} from "react-icons/md";
 import {useEffect, useState} from "react";
 import {loginApi} from "../services/apiConfig";
 import {ROUTE_LOGIN, ROUTE_SUCCESS} from "../constants/routes";
@@ -18,7 +19,7 @@ import {SignupRequest} from "@react-springboot-appengine-template/api/dist";
 
 const inputFieldStyle = {marginLeft: 2, marginRight: 2, marginBottom: 1, width: '100%'};
 
-const SignUpScreen: React.FC<RouteComponentProps> = () => {
+const SignUpScreen: React.FC<RouteProps> = () => {
     const theme = useTheme();
     const navigate = useNavigate();
 

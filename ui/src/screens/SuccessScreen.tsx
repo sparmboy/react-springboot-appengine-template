@@ -1,12 +1,12 @@
 import {
     Grid, Typography
 } from "@mui/material";
-import {RouteComponentProps} from "@reach/router";
+import {RouteProps} from "react-router";
 import  "./HomeScreen.css";
-import {RiCheckboxCircleFill} from "react-icons/all";
+import {RiCheckboxCircleFill} from "react-icons/ri";
 
 
-const SuccessScreen: React.FC<RouteComponentProps> = () => {
+const SuccessScreen: React.FC<RouteProps> = () => {
 
     return <Grid
         container
@@ -36,7 +36,7 @@ const SuccessScreen: React.FC<RouteComponentProps> = () => {
 
 
         <Grid item sx={{marginTop:20}}>
-            <Typography variant={"body1"}  color={"white"}>Didnt receive it? <a href={"#"}>Click here</a></Typography>
+            <Typography variant={"body1"}  color={"white"}>Didnt receive it? <a href={"./#"}>Click here</a></Typography>
         </Grid>
 
 

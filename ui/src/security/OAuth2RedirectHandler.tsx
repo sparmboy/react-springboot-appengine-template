@@ -1,15 +1,17 @@
 import {FC} from "react";
-import { RouteComponentProps, RouterProps, useNavigate} from "@reach/router";
+import {RouteProps, useNavigate} from "react-router";
 import {ROUTE_HOME, ROUTE_LOGIN} from "../constants/routes";
 import {ACCESS_TOKEN} from "../constants/session";
 
-export const OAuth2RedirectHandler: FC<RouteComponentProps<RouterProps>> = (props) => {
+export const OAuth2RedirectHandler: FC<RouteProps> = (props) => {
     const navigate = useNavigate();
+
     const getUrlParameter = (name:string):string =>  {
         name = name.replace(/[[]/, '\\[').replace(/[\]]/, '\\]');
         var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
 
-        var results = props.location?.search ? regex.exec(props.location?.search) : '';
+        // @ts-ignore TODO: path / search
+        var results = props.path?.search ? regex.exec(props.path?.search) : '';
         return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
     };
 
