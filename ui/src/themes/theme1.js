@@ -47,7 +47,7 @@ const fontHeader = {
     textTransform: 'uppercase',
 };
 
-const defaultTheme = {
+export const defaultTheme = {
     ...rawTheme,
     palette: {
         ...rawTheme.palette,
@@ -107,4 +107,4 @@ const defaultTheme = {
     },
 };
 
-export default defaultTheme;
+

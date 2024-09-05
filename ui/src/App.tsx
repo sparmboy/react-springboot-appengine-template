@@ -1,4 +1,4 @@
-import React, {useEffect, useReducer} from 'react';
+import {useEffect, useReducer} from 'react';
 import HomeScreen from "./screens/HomeScreen";
 import LoginScreen from "./screens/LoginScreen";
 import {OAuth2RedirectHandler} from "./security/OAuth2RedirectHandler";

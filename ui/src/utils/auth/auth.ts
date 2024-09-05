@@ -16,7 +16,7 @@ export const initialAuthState: AuthState = {
     authenticating: false
 };
 
-export const authReducer = (state: AuthState, action: AuthAction): AuthState => {
+export const authReducer = (_state: AuthState, action: AuthAction): AuthState => {
     switch (action.type) {
         case 'success':
             if(action.authState.accessToken) {

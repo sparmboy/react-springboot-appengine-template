@@ -18,7 +18,7 @@ const API_PATH = '/api/v1';
 
 let configurationParameters: ConfigurationParameters = {
     basePath: host + API_PATH,
-    accessToken: (name?: string, scopes?: string[]) => {
+    accessToken: () => {
         const accessToken = localStorage.getItem(ACCESS_TOKEN);
         return accessToken ? accessToken : '';
     }
