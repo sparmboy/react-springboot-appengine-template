@@ -40,7 +40,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "./schema/oauthUrl.schema.json"
+                    "$ref": "./schema/oauthUrl.json"
                   }
                 }
               }
@@ -51,7 +51,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "./schema/responses/errorResponse.schema.json"
+                  "$ref": "./schema/responses/errorResponse.json"
                 }
               }
             }
@@ -61,7 +61,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "./schema/responses/errorResponse.schema.json"
+                  "$ref": "./schema/responses/errorResponse.json"
                 }
               }
             }
@@ -77,10 +77,11 @@
         "summary": "Attempts logging the user in",
         "operationId": "authenticateUser",
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "./schema/requests/loginRequest.schema.json"
+                "$ref": "./schema/requests/loginRequest.json"
               }
             }
           }
@@ -91,7 +92,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "./schema/responses/authResponse.schema.json"
+                  "$ref": "./schema/responses/authResponse.json"
                 }
               }
             }
@@ -101,7 +102,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "./schema/responses/errorResponse.schema.json"
+                  "$ref": "./schema/responses/errorResponse.json"
                 }
               }
             }
@@ -111,7 +112,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "./schema/responses/errorResponse.schema.json"
+                  "$ref": "./schema/responses/errorResponse.json"
                 }
               }
             }
@@ -140,7 +141,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "./schema/responses/errorResponse.schema.json"
+                  "$ref": "./schema/responses/errorResponse.json"
                 }
               }
             }
@@ -150,7 +151,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "./schema/responses/errorResponse.schema.json"
+                  "$ref": "./schema/responses/errorResponse.json"
                 }
               }
             }
@@ -166,10 +167,11 @@
         "summary": "Registers a new user manually",
         "operationId": "registerUser",
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "./schema/requests/signupRequest.schema.json"
+                "$ref": "./schema/requests/signupRequest.json"
               }
             }
           }
@@ -190,7 +192,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "./schema/responses/errorResponse.schema.json"
+                  "$ref": "./schema/responses/errorResponse.json"
                 }
               }
             }
@@ -200,7 +202,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "./schema/responses/errorResponse.schema.json"
+                  "$ref": "./schema/responses/errorResponse.json"
                 }
               }
             }
@@ -240,7 +242,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "./schema/responses/errorResponse.schema.json"
+                  "$ref": "./schema/responses/errorResponse.json"
                 }
               }
             }
@@ -250,7 +252,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "./schema/responses/errorResponse.schema.json"
+                  "$ref": "./schema/responses/errorResponse.json"
                 }
               }
             }
@@ -278,7 +280,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "./schema/order.schema.json"
+                    "$ref": "./schema/order.json"
                   }
                 }
               }
@@ -289,7 +291,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "./schema/responses/errorResponse.schema.json"
+                  "$ref": "./schema/responses/errorResponse.json"
                 }
               }
             }
@@ -299,7 +301,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "./schema/responses/errorResponse.schema.json"
+                  "$ref": "./schema/responses/errorResponse.json"
                 }
               }
             }
@@ -313,10 +315,11 @@
         "summary": "Places a new order",
         "operationId": "placeOrder",
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "./schema/requests/placeOrderRequest.schema.json"
+                "$ref": "./schema/requests/placeOrderRequest.json"
               }
             }
           }
@@ -327,7 +330,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "./schema/responses/placeOrderResponse.schema.json"
+                  "$ref": "./schema/responses/placeOrderResponse.json"
                 }
               }
             }
@@ -337,7 +340,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "./schema/responses/errorResponse.schema.json"
+                  "$ref": "./schema/responses/errorResponse.json"
                 }
               }
             }
@@ -347,7 +350,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "./schema/responses/errorResponse.schema.json"
+                  "$ref": "./schema/responses/errorResponse.json"
                 }
               }
             }

@@ -3,6 +3,7 @@ package com.example.config;
 import static com.example.config.WebSocketConfig.TOPIC_MY_EVENT;
 import static com.example.config.WebSocketConfig.TOPIC_PREFIX;
 import static com.example.config.WebSocketConfig.WEBSOCKETS_ENDPOINT;
+import static org.springframework.security.config.Customizer.withDefaults;
 
 import com.example.security.CustomUserDetailsService;
 import com.example.security.RestAuthenticationEntryPoint;
@@ -16,35 +17,39 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.BeanIds;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(
+@EnableMethodSecurity(
     securedEnabled = true,
-    jsr250Enabled = true,
-    prePostEnabled = true
+    jsr250Enabled = true
 )
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+@RequiredArgsConstructor
+public class SecurityConfig {
 
     public static final List<String> SWAGGER_ROUTES = Arrays.asList(
         "/swagger-ui.html",
-        "/webjars/springfox-swagger-ui", "/swagger-resources", "/null/swagger-resources", "/v2/api-docs","/actuator");
+        "/webjars/springfox-swagger-ui", "/swagger-resources", "/null/swagger-resources", "/v2/api-docs", "/actuator");
 
     public static final List<String> UNSECURED_PATHS = Arrays.asList("/home",
         "/login",
@@ -95,7 +100,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         "/app/v2/api-docs",
         "/api/v1/auth/**",
         "/api/v1/orders/**",
-        WEBSOCKETS_ENDPOINT +"/**",
+        WEBSOCKETS_ENDPOINT + "/**",
         TOPIC_PREFIX,
         TOPIC_MY_EVENT
     );
@@ -107,44 +112,36 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     ).collect(Collectors.toList());
 
 
-    @Autowired
-    private CustomUserDetailsService customUserDetailsService;
+    private final CustomUserDetailsService customUserDetailsService;
 
-    @Autowired
-    private CustomOAuth2UserService customOAuth2UserService;
+    private final CustomOAuth2UserService customOAuth2UserService;
 
-    @Autowired
-    private CustomOAuth2OidcUserService customOAuth2OidcUserService;
+    private final CustomOAuth2OidcUserService customOAuth2OidcUserService;
 
-    @Autowired
-    private OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+    private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 
-    @Autowired
-    private OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
+    private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
 
-    @Autowired
-    private ClientRegistrationRepository clientRegistrationRepository;
+    private final ClientRegistrationRepository clientRegistrationRepository;
+
+    private final TokenAuthenticationFilter tokenAuthenticationFilter;
+
+    private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 
     @Bean
-    public TokenAuthenticationFilter tokenAuthenticationFilter() {
-        return new TokenAuthenticationFilter();
+    public AuthenticationManager authenticationManager(List<AuthenticationProvider> authenticationProviders) throws Exception {
+        return new ProviderManager(authenticationProviders);
     }
 
-    /*
-      By default, Spring OAuth2 uses HttpSessionOAuth2AuthorizationRequestRepository to save
-      the authorization request. But, since our service is stateless, we can't save it in
-      the session. We'll save the request in a Base64 encoded cookie instead.
-    */
     @Bean
-    public HttpCookieOAuth2AuthorizationRequestRepository cookieAuthorizationRequestRepository() {
-        return new HttpCookieOAuth2AuthorizationRequestRepository();
-    }
-
-    @Override
-    public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
-        authenticationManagerBuilder
-            .userDetailsService(customUserDetailsService)
-            .passwordEncoder(passwordEncoder());
+    public DaoAuthenticationProvider authenticationProvider(
+        CustomUserDetailsService userDetailsService,
+        PasswordEncoder encoder
+    ) {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetailsService);
+        authProvider.setPasswordEncoder(encoder);
+        return authProvider;
     }
 
     @Bean
@@ -152,12 +149,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-
-    @Bean(BeanIds.AUTHENTICATION_MANAGER)
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
 
     @Value("${spring.security.oauth2.client.registration.apple.keyId}")
     private String appleKeyId;
@@ -168,48 +159,47 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Value("${spring.security.oauth2.client.registration.apple.clientId}")
     private String clientId;
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .cors()
-            .and()
-            .sessionManagement()
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            .and()
-            .csrf()
-            .disable()
-            .formLogin()
-            .disable()
-            .httpBasic()
-            .disable()
-            .exceptionHandling()
-            .authenticationEntryPoint(new RestAuthenticationEntryPoint())
-            .and()
-            .authorizeRequests()
-            .antMatchers(ANON_PATHS.toArray(new String[] {}))
-            .permitAll()
-            .and().authorizeRequests()
-            .antMatchers(SECURED_PATHS.toArray(new String[] {}))
-            .permitAll()
-            .anyRequest()
-            .authenticated()
-            .and()
-            .oauth2Login()
-            .authorizationEndpoint()
-            .baseUri("/api/oauth2/authorize")
-            .authorizationRequestRepository(cookieAuthorizationRequestRepository())
-            .and()
-            .redirectionEndpoint()
-            .baseUri("/api/oauth2/callback/*")
-            .and()
-            .userInfoEndpoint()
-            .userService(customOAuth2UserService)
-            .oidcUserService(customOAuth2OidcUserService)
-            .and()
-            .successHandler(oAuth2AuthenticationSuccessHandler)
-            .failureHandler(oAuth2AuthenticationFailureHandler);
+            .cors(withDefaults())
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .csrf(withDefaults())
+            .formLogin(AbstractHttpConfigurer::disable)
+            .httpBasic(AbstractHttpConfigurer::disable)
+            .exceptionHandling(httpSecurityExceptionHandlingConfigurer -> httpSecurityExceptionHandlingConfigurer.authenticationEntryPoint(new RestAuthenticationEntryPoint()))
+
+            .authorizeHttpRequests((requests) -> requests
+                .requestMatchers(ANON_PATHS.stream().map(AntPathRequestMatcher::new).toArray(AntPathRequestMatcher[]::new))
+                .permitAll()
+            )
+
+            .authorizeHttpRequests((requests) -> requests
+                .requestMatchers(SECURED_PATHS.stream().map(AntPathRequestMatcher::new).toArray(AntPathRequestMatcher[]::new))
+                .permitAll()
+                .anyRequest()
+                .authenticated()
+
+            )
+            .oauth2Login(oauth2 -> oauth2.authorizationEndpoint(customizer -> customizer
+                    .baseUri("/api/oauth2/authorize")
+                    .authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository))
+                .redirectionEndpoint(redirectionEndpointConfig -> redirectionEndpointConfig
+                    .baseUri("/api/oauth2/callback/*")
+                )
+                .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig
+                    .userService(customOAuth2UserService)
+                    .oidcUserService(customOAuth2OidcUserService)
+
+                )
+                .successHandler(oAuth2AuthenticationSuccessHandler)
+                .failureHandler(oAuth2AuthenticationFailureHandler)
+            );
+
 
         // Add our custom Token based authentication filter
-        http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
     }
 }

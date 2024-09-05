@@ -10,20 +10,20 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import java.util.Date;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
+@Primary
 public class TokenProvider {
-    
-    private ApplicationConfig appProperties;
 
-    public TokenProvider(ApplicationConfig appProperties) {
-        this.appProperties = appProperties;
-    }
+    private final ApplicationConfig appProperties;
 
     public String createToken(Authentication authentication) {
         UserPrincipal userPrincipal = (UserPrincipal)authentication.getPrincipal();

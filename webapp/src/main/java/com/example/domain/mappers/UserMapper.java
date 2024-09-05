@@ -13,6 +13,7 @@ import org.mapstruct.Named;
 @Mapper
 public interface UserMapper {
     @Mapping(target = "roles", source = "userEntity.roles",qualifiedByName = "mapRoles")
+    @Mapping(target = "imageUrl", expression = "java(java.util.Optional.of(userEntity.getImageUrl()))")
     UserDTO map(UserEntity userEntity);
 
     @Named("mapRoles")

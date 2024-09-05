@@ -7,7 +7,7 @@
   "required": ["order"],
   "properties": {
     "order": {
-      "$ref": "../order.schema.json"
+      "$ref": "../order.json"
     }
   }
 }

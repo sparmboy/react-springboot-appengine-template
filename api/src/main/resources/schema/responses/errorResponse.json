@@ -8,7 +8,6 @@
     "errorCode",
     "errorMessage",
     "errorDetails"
-
   ],
   "properties": {
     "errorCode": {
@@ -21,7 +20,7 @@
       "title": "Error Message",
       "description": "A breif description of the error"
     },
-    "errorMessage": {
+    "errorDetails": {
       "type": "string",
       "title": "Error Details",
       "description": "A more detailed description of the error"

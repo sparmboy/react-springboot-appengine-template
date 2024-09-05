@@ -5,19 +5,14 @@ import static com.example.config.WebSocketConfig.WEBSOCKETS_ENDPOINT;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import com.example.config.WebSocketConfig;
-import com.google.api.client.util.IOUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.*;
+import jakarta.servlet.http.*;
+import org.apache.commons.io.IOUtils;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 

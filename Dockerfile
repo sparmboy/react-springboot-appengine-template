@@ -1,5 +1,5 @@
 # cache as most as possible in this multistage dockerfile.
-FROM maven:3.6-alpine as DEPS
+FROM maven:3.8.3-openjdk-17 as DEPS
 
 WORKDIR /opt/app
 COPY api/pom.xml api/pom.xml
@@ -16,7 +16,7 @@ RUN mvn -DbuildCommand=build-docker -B -e -C org.apache.maven.plugins:maven-depe
 # of using docker layer caches. If something goes wrong from this
 # line on, all dependencies from DEPS were already downloaded and
 # stored in docker's layers.
-FROM maven:3.6-alpine as BUILDER
+FROM maven:3.8.3-openjdk-17 as BUILDER
 WORKDIR /opt/app
 COPY --from=deps /root/.m2 /root/.m2
 COPY --from=deps /opt/app/ /opt/app
@@ -32,7 +32,7 @@ COPY webapp/src /opt/app/webapp/src
 RUN mvn -DbuildCommand=build-docker -B -e clean install -DskipTests=true
 
 # At this point, BUILDER stage should have your .jar or whatever in some path
-FROM openjdk:8-alpine
+FROM openjdk:17-alpine
 COPY --from=builder opt/app/webapp/target/*.jar /usr/local/lib/app.jar
 EXPOSE 8080
 ENTRYPOINT ["java","-jar","-Dspring.profiles.active=docker","/usr/local/lib/app.jar"]

@@ -26,6 +26,12 @@ public class DynamicInMemoryClientRegistrationRepository implements ClientRegist
         registrations = createRegistrationsMap(clientRegistrations);
     }
 
+    public DynamicInMemoryClientRegistrationRepository(Map<String, ClientRegistration> registrations, Map<String, ClientSecretGenerator> clientSecretGeneratorMap) {
+        this.registrations = registrations;
+        this.clientSecretGeneratorMap = clientSecretGeneratorMap;
+    }
+
+
     private static Map<String, ClientRegistration> createRegistrationsMap(List<ClientRegistration> registrations) {
         Assert.notEmpty(registrations, "registrations cannot be empty");
         return toUnmodifiableConcurrentMap(registrations);

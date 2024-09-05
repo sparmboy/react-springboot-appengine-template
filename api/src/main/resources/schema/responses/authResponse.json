@@ -24,7 +24,7 @@
       "default": "Bearer"
     },
     "user": {
-      "$ref": "../userDTO.schema.json"
+      "$ref": "../userDTO.json"
     }
   }
 }
