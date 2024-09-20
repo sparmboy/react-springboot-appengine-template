@@ -19,6 +19,7 @@ dist/
 
 # Package files
 *.jar
+*.tgz
 
 # Maven
 target/

@@ -16,14 +16,14 @@ console.info('App Host set to ',host);
 
 const API_PATH = '/api/v1';
 
-let configurationParameters: ConfigurationParameters = {
+const configurationParameters: ConfigurationParameters = {
     basePath: host + API_PATH,
-    accessToken: (name?: string, scopes?: string[]) => {
+    accessToken: () => {
         const accessToken = localStorage.getItem(ACCESS_TOKEN);
         return accessToken ? accessToken : '';
     }
 };
-let configuration = new Configuration(configurationParameters);
+const configuration = new Configuration(configurationParameters);
 
 export const ordersApi = new OrdersControllerApi(configuration);
 export const loginApi = new LoginControllerApi(configuration);

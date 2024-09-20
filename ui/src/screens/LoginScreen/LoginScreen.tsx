@@ -1,15 +1,14 @@
-import {Button, Drawer, Grid, Paper, Typography} from "@mui/material";
+import { Button, Drawer, Grid2 as Grid, Paper, Typography} from "@mui/material";
 import {RouteProps, useNavigate} from "react-router";
 import {IoLogoApple, IoLogoGoogle } from "react-icons/io";
 import { MdMail} from "react-icons/md";
-import { loginApi} from "../services/apiConfig";
-import { useEffect, useState} from "react";
+import { loginApi} from "../../services/apiConfig";
+import React, { useEffect, useState} from "react";
 import {createStyles, makeStyles} from "@mui/styles";
-import {   ROUTE_SIGNUP} from "../constants/routes";
+import {   ROUTE_SIGNUP} from "../../constants/routes";
 import {OauthUrl} from "@react-springboot-appengine-template/api/dist";
-
-interface LoginScreenProps  {
-}
+import {Alert} from "@mui/lab";
+import "./LoginScreen.scss";
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -25,17 +24,20 @@ const useStyles = makeStyles(() =>
     }),
 );
 
-const LoginScreen: React.FC<LoginScreenProps & RouteProps> = (props) => {
+const LoginScreen: React.FC<RouteProps> = (props) => {
     const classes = useStyles();
 
     const navigate = useNavigate();
     const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
     const [oauthUrls, setOauthUrls] = useState<OauthUrl[]>([]);
+    const [errorMessage,setErrorMessage] = useState<string>();
 
     const loadUrls = () => {
         loginApi.getOauthUrls().then((urls) => {
             setOauthUrls(urls);
             setDrawerOpen(true);
+        }).catch( () => {
+            setErrorMessage("Sorry! Looks like there is an error with our system at the moment. Please come back later.");
         });
     }
 
@@ -50,16 +52,20 @@ const LoginScreen: React.FC<LoginScreenProps & RouteProps> = (props) => {
     }
 
     return <Grid
+        id={"loginScreen"}
         container
         direction="column"
         justifyContent="center"
         alignItems="stretch"
         spacing={2}
     >
-        <Grid item xs={1} sx={{marginTop: 16}}>
+
+        <Grid size={1}  className={"logo-container"}>
             <img alt={"logo"} src={"/logo192.png"}/>
         </Grid>
 
+        {errorMessage && <Alert severity={"error"} variant={"outlined"} >{errorMessage}</Alert>}
+        {!errorMessage &&
         <Drawer
             anchor={'bottom'}
             open={drawerOpen}
@@ -74,10 +80,11 @@ const LoginScreen: React.FC<LoginScreenProps & RouteProps> = (props) => {
                     spacing={4}
                 >
 
-                    <Grid item container justifyContent="center"> <Typography variant={"h4"}>Create an
+                    <Grid justifyContent="center">
+                        <Typography variant={"h4"}>Create an
                         account</Typography>
                     </Grid>
-                    {oauthUrls.map((oa, i) => <Grid item container justifyContent="center" key={i}>
+                    {oauthUrls.map((oa, i) => <Grid justifyContent="center" key={i}>
                         <Button key={oa.key} variant={"outlined"}
                                 size={"large"}
                                 startIcon={getIconForAuth(oa.key)}
@@ -85,7 +92,7 @@ const LoginScreen: React.FC<LoginScreenProps & RouteProps> = (props) => {
                             with {oa.key}</Button>
                     </Grid>)}
 
-                    <Grid item container justifyContent="center">
+                    <Grid  justifyContent="center">
                         <Button variant={"outlined"}
                                 size={"large"}
                                 onClick={() => navigate(ROUTE_SIGNUP)}
@@ -93,9 +100,9 @@ const LoginScreen: React.FC<LoginScreenProps & RouteProps> = (props) => {
                         >Sign up with email</Button>
                     </Grid>
 
-                    <Grid item container justifyContent="center"> <Typography variant={"body1"}>Already have an
+                    <Grid  justifyContent="center"> <Typography variant={"body1"}>Already have an
                         account? <a href={"/signin"}>Sign In</a></Typography></Grid>
-                    <Grid item container justifyContent="center"> <Typography variant={"caption"}
+                    <Grid  justifyContent="center"> <Typography variant={"caption"}
                                                                               >By
                         signing up you
                         agree to our <a href={"/privacy-policy"}>Privacy Policy and Terms</a></Typography></Grid>
@@ -104,6 +111,7 @@ const LoginScreen: React.FC<LoginScreenProps & RouteProps> = (props) => {
 
             </Paper>
         </Drawer>
+        }
 
     </Grid>
 

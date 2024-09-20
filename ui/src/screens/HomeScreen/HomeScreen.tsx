@@ -1,24 +1,20 @@
 import {RouteProps, useNavigate} from "react-router";
 import {
     Button,
-    Grid,
+    Grid2 as Grid,
 } from "@mui/material";
 import './HomeScreen.css';
-import {useContext, useEffect} from "react";
-import {ROUTE_ADMIN, ROUTE_LOGIN} from "../constants/routes";
-import {AuthState, AuthStateContext, doesUserHaveAnyOneOfTheseRoles, signOut} from "../utils/auth/auth";
-import {ROLE_ADMIN} from "../constants/roles";
+import { useEffect} from "react";
+import {ROUTE_ADMIN, ROUTE_LOGIN} from "../../constants/routes";
+import { doesUserHaveAnyOneOfTheseRoles, signOut} from "../../utils/auth/auth";
+import {ROLE_ADMIN} from "../../constants/roles";
 import {GoSignOut} from "react-icons/go";
 import { GrUserAdmin} from "react-icons/gr";
+import {useAuth} from "../../services/Authentication/Authentication.types";
 
+const HomeScreen: React.FC<RouteProps> = () => {
 
-
-interface HomeScreenProps {
-}
-
-const HomeScreen: React.FC<HomeScreenProps & RouteProps> = () => {
-
-    const authState = useContext<AuthState>(AuthStateContext);
+    const authStore = useAuth();
 
     const navigate = useNavigate();
     useEffect(()=> {
@@ -26,13 +22,13 @@ const HomeScreen: React.FC<HomeScreenProps & RouteProps> = () => {
             await navigate(ROUTE_LOGIN);
         }
 
-        if( !authState.authenticating ) {
-            if (!authState.user ) {
+        if( !authStore.authenticating ) {
+            if (!authStore.user ) {
                 navigateToLogin();
             }
         }
 
-    },[authState,navigate])
+    },[authStore,navigate])
 
     const onAdmin = () => navigate(`${ROUTE_ADMIN}`);
 
@@ -44,14 +40,14 @@ const HomeScreen: React.FC<HomeScreenProps & RouteProps> = () => {
         alignItems="center"
         spacing={2}
     >
-        <Grid item sx={{marginTop: 16}}>
+        <Grid sx={{marginTop: 16}}>
             <img alt="logo" src={"/logo192.png"}/>
         </Grid>
 
         <div className="circle-right"/>
 
-        {authState.user && doesUserHaveAnyOneOfTheseRoles(authState.user,[ROLE_ADMIN]) &&
-        <Grid item container justifyContent="center" alignItems={"stretch"} >
+        {authStore.user && doesUserHaveAnyOneOfTheseRoles(authStore.user,[ROLE_ADMIN]) &&
+        <Grid container justifyContent="center" alignItems={"stretch"} >
             <Button variant={"contained"}
                     onClick={onAdmin}
                     startIcon={<GrUserAdmin/>}
@@ -63,7 +59,7 @@ const HomeScreen: React.FC<HomeScreenProps & RouteProps> = () => {
             >Admin Page</Button>
         </Grid>}
 
-        <Grid item container justifyContent="center" alignItems={"stretch"} >
+        <Grid container justifyContent="center" alignItems={"stretch"} >
             <Button variant={"contained"}
                     onClick={() => signOut(navigate)}
                     startIcon={<GoSignOut/>}

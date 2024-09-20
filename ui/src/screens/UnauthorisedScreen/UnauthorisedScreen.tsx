@@ -1,11 +1,11 @@
 import {
     Button,
-    Grid, Typography
+    Grid2 as Grid, Typography
 } from "@mui/material";
 import {RouteProps, useNavigate} from "react-router";
-import "./HomeScreen.css";
+import "../HomeScreen/HomeScreen.css";
 import {GiHalt} from "react-icons/gi";
-import {ROUTE_HOME} from "../constants/routes";
+import {ROUTE_HOME} from "../../constants/routes";
 
 
 const UnauthorisedScreen: React.FC<RouteProps> = () => {
@@ -21,21 +21,21 @@ const UnauthorisedScreen: React.FC<RouteProps> = () => {
     >
         <div className="circle-right"/>
 
-        <Grid item sx={{marginTop: 16}}>
+        <Grid sx={{marginTop: 16}}>
             <img alt="logo" src={"/logo192.png"}/>
         </Grid>
 
-        <Grid item sx={{borderRadius: 150}}>
+        <Grid  sx={{borderRadius: 150}}>
             <GiHalt size={144} color={"#727f8f"}/>
         </Grid>
 
 
-        <Grid item>
+        <Grid>
             <Typography variant={"h3"} color={"white"}>Sorry you don't have permission to access this.</Typography>
         </Grid>
 
 
-        <Grid item container justifyContent="center" alignItems={"stretch"} >
+        <Grid container justifyContent="center" alignItems={"stretch"} >
             <Button variant={"contained"}
                     onClick={onHome}
                     sx={{

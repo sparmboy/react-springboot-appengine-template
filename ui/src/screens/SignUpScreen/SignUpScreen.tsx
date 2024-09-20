@@ -1,7 +1,7 @@
 import {
     Button,
     FormControl,
-    Grid, IconButton, InputAdornment,
+    Grid2 as Grid, IconButton, InputAdornment,
     InputLabel,
     OutlinedInput,
     TextField,
@@ -12,8 +12,8 @@ import {RouteProps, useNavigate} from "react-router";
 import {IoArrowBack} from "react-icons/io5";
 import {  MdVisibility, MdVisibilityOff} from "react-icons/md";
 import {useEffect, useState} from "react";
-import {loginApi} from "../services/apiConfig";
-import {ROUTE_LOGIN, ROUTE_SUCCESS} from "../constants/routes";
+import {loginApi} from "../../services/apiConfig";
+import {ROUTE_LOGIN, ROUTE_SUCCESS} from "../../constants/routes";
 import {SignupRequest} from "@react-springboot-appengine-template/api/dist";
 
 
@@ -66,22 +66,22 @@ const SignUpScreen: React.FC<RouteProps> = () => {
         spacing={1}
     >
 
-        <Grid item container justifyContent="start"> <Button startIcon={<IoArrowBack/>} color={"secondary"} onClick={()=>navigate(ROUTE_LOGIN)}/>
+        <Grid container justifyContent="start"> <Button startIcon={<IoArrowBack/>} color={"secondary"} onClick={()=>navigate(ROUTE_LOGIN)}/>
         </Grid>
 
-        <Grid item container justifyContent="start"> <Typography variant={"h4"}
+        <Grid container justifyContent="start"> <Typography variant={"h4"}
                                                                  sx={{color: theme.palette.primary.dark, m: 2}}>Create
             an
             account</Typography>
         </Grid>
 
-        <Grid item container justifyContent="center" alignItems={"stretch"}>
+        <Grid container justifyContent="center" alignItems={"stretch"}>
             <TextField id="email" label="Your Email" variant="outlined" sx={inputFieldStyle}
                        onChange={handleChange('email')}
             />
         </Grid>
 
-        <Grid item container justifyContent="center" alignItems={"stretch"}>
+        <Grid container justifyContent="center" alignItems={"stretch"}>
             <FormControl sx={inputFieldStyle} variant="outlined">
                 <InputLabel htmlFor="outlined-adornment-password">Create a strong password</InputLabel>
                 <OutlinedInput
@@ -107,7 +107,7 @@ const SignUpScreen: React.FC<RouteProps> = () => {
 
         </Grid>
 
-        <Grid item container justifyContent="center" alignItems={"stretch"}>
+        <Grid container justifyContent="center" alignItems={"stretch"}>
             <FormControl sx={inputFieldStyle} variant="outlined">
                 <InputLabel htmlFor="outlined-adornment-password">Repeat password</InputLabel>
                 <OutlinedInput
@@ -132,7 +132,7 @@ const SignUpScreen: React.FC<RouteProps> = () => {
             </FormControl> </Grid>
 
 
-        <Grid item container justifyContent="center" alignItems={"stretch"} sx={inputFieldStyle}>
+        <Grid container justifyContent="center" alignItems={"stretch"} sx={inputFieldStyle}>
             <Button variant={"outlined"}
                     disabled={!formValid}
                     onClick={onSignUp}
@@ -141,7 +141,7 @@ const SignUpScreen: React.FC<RouteProps> = () => {
         </Grid>
 
 
-        <Grid item container justifyContent="center"> <Typography variant={"caption"}>By signing up you
+        <Grid container justifyContent="center"> <Typography variant={"caption"}>By signing up you
             agree to our <a href={"/privacy-policy"}>Privacy Policy and Terms</a></Typography></Grid>
 
 
