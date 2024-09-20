@@ -6,12 +6,11 @@ import {ACCESS_TOKEN} from "../constants/session";
 export const OAuth2RedirectHandler: FC<RouteProps> = (props) => {
     const navigate = useNavigate();
 
-    const getUrlParameter = (name:string):string =>  {
+    const getUrlParameter = (name: string): string => {
         name = name.replace(/[[]/, '\\[').replace(/[\]]/, '\\]');
-        var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+        const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
 
-        // @ts-ignore TODO: path / search
-        var results = props.path?.search ? regex.exec(props.path?.search) : '';
+        const results = props.path ? regex.exec(props.path) : '';
         return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
     };
 
@@ -19,15 +18,15 @@ export const OAuth2RedirectHandler: FC<RouteProps> = (props) => {
     //const error = getUrlParameter('error');
     const uri = getUrlParameter('uri');
 
-    console.log('Token=',token);
-    console.log('uri=',uri);
+    console.log('Token=', token);
+    console.log('uri=', uri);
 
-    if(token) {
+    if (token) {
         localStorage.setItem(ACCESS_TOKEN, token);
-        if( uri ) {
-            console.log('Navigating back to original uri ',uri);
+        if (uri) {
+            console.log('Navigating back to original uri ', uri);
             navigate(uri);
-        }else {
+        } else {
             navigate(ROUTE_HOME);
         }
     } else {

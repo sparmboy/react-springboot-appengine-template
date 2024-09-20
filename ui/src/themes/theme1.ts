@@ -19,12 +19,12 @@ const rawTheme = createTheme({
             dark: '#ffb25e',
         },
         error: {
-            xLight: red[50],
+            light: red[50],
             main: red[500],
             dark: red[700],
         },
         success: {
-            xLight: green[50],
+            light: green[50],
             main: green[500],
             dark: green[700],
         },
@@ -35,15 +35,13 @@ const rawTheme = createTheme({
         fontWeightLight: 300, // Work Sans
         fontWeightRegular: 400, // Work Sans
         fontWeightMedium: 700, // Roboto Condensed
-        lineHeight: "1.5",
-        fontFamilySecondary: "'Roboto Condensed', sans-serif",
     },
 });
 
 const fontHeader = {
     color: rawTheme.palette.text.primary,
     fontWeight: rawTheme.typography.fontWeightMedium,
-    fontFamily: rawTheme.typography.fontFamilySecondary,
+    fontFamily: rawTheme.typography.fontFamily,
     textTransform: 'uppercase',
 };
 

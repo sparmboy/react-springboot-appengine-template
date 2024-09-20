@@ -1,6 +1,6 @@
 import {useEffect} from "react";
-import {AuthState} from "../../utils/auth/auth";
 import {useNavigate} from "react-router";
+import {AuthState} from "../../services/Authentication/Authentication.types";
 
 export const NavigateTo = (props: { to:string,authState: AuthState }) => {
     const navigate = useNavigate();

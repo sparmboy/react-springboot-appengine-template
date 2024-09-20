@@ -1,0 +1,27 @@
+#loginScreen {
+
+  .screen-container {
+    background-color: #1ea7fd;
+    width: 90%;
+    margin: auto;
+    height: 80vh;
+    margin-top: 10%; /* 100%-80%/2 */
+  }
+
+  .logo-container {
+    width: 200px;
+    height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    img {
+      width: 100px;
+      height: 100px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translateX(-50%) translateY(-50%);
+    }
+  }
+}

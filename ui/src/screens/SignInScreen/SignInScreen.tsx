@@ -1,7 +1,7 @@
 import {
     Button,
     FormControl,
-    Grid, IconButton, InputAdornment,
+    Grid2 as Grid, IconButton, InputAdornment,
     InputLabel,
     OutlinedInput,
     TextField,
@@ -9,20 +9,19 @@ import {
     useTheme
 } from "@mui/material";
 import {RouteProps, useNavigate} from "react-router";
-import { MdVisibility, MdVisibilityOff} from "react-icons/md";
+import {MdVisibility, MdVisibilityOff} from "react-icons/md";
 import {IoArrowBack} from "react-icons/io5"
-import {Dispatch, useContext, useEffect, useState} from "react";
-import {loginApi} from "../services/apiConfig";
-import {ROUTE_HOME, ROUTE_LOGIN} from "../constants/routes";
+import {useEffect, useState} from "react";
+import {loginApi} from "../../services/apiConfig";
+import {ROUTE_LOGIN} from "../../constants/routes";
 import {Alert} from "@mui/lab";
-import {AuthAction, AuthDispatchContext, getSavedUrlAndClear} from "../utils/auth/auth";
 import {LoginRequest, SignupRequest} from "@react-springboot-appengine-template/api/dist";
+import {useAuth} from "../../services/Authentication/Authentication.types";
 
 const SignInScreen: React.FC<RouteProps> = () => {
     const theme = useTheme();
     const navigate = useNavigate();
-    const dispatch = useContext<Dispatch<AuthAction> | null>(AuthDispatchContext);
-    const [errorMessage, setErrorMessage] = useState<string>();
+    const authStore = useAuth();
     const [formValid, setFormValid] = useState<boolean>(false);
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const [loginRequest, setLoginRequest] = useState<LoginRequest>({
@@ -45,29 +44,9 @@ const SignInScreen: React.FC<RouteProps> = () => {
     }
 
     const onSignIn = () => {
-        if( dispatch ) {
-            dispatch({type: 'authenticating'});
-        }
-        loginApi.authenticateUser({loginRequest: loginRequest}).then((resp) => {
-            if (dispatch) {
-                dispatch({type: 'success', authState: {...resp, authenticating: false}});
-            }
-
-            const url = getSavedUrlAndClear();
-            if( url ) {
-                navigate(url);
-            }
-            else  {
-                navigate(ROUTE_HOME);
-            }
-        },(err) => {
-            if( err.status === 401) {
-                setErrorMessage('Unable to sign in. Please check your email address and password');
-            }
-            if( dispatch ) {
-                dispatch({type: 'failure',error: JSON.stringify(err)});
-            }
-        });
+        loginApi.authenticateUser({loginRequest: loginRequest})
+            .then(authStore.onSuccess)
+            .catch(authStore.onFailure);
     }
 
     useEffect(validateForm, [loginRequest])
@@ -81,24 +60,24 @@ const SignInScreen: React.FC<RouteProps> = () => {
         spacing={1}
     >
 
-        <Grid item container justifyContent="start"> <Button startIcon={<IoArrowBack/>}
+        <Grid container justifyContent="start"> <Button startIcon={<IoArrowBack/>}
                                                              color={"secondary"}
                                                              onClick={() => navigate(ROUTE_LOGIN)}/>
         </Grid>
 
-        <Grid item container justifyContent="start"> <Typography variant={"h4"}
+        <Grid container justifyContent="start"> <Typography variant={"h4"}
                                                                  sx={{color: theme.palette.primary.dark, m: 2}}>Sign in
             to your account</Typography>
         </Grid>
 
-        <Grid item container justifyContent="center" alignItems={"stretch"}>
+        <Grid container justifyContent="center" alignItems={"stretch"}>
             <TextField id="email" label="Your Email" variant="outlined"
                        onChange={handleChange('email')}
             />
         </Grid>
 
-        <Grid item container justifyContent="center" alignItems={"stretch"}>
-            <FormControl  variant="outlined">
+        <Grid container justifyContent="center" alignItems={"stretch"}>
+            <FormControl variant="outlined">
                 <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
                 <OutlinedInput
                     id="outlined-adornment-password"
@@ -124,12 +103,12 @@ const SignInScreen: React.FC<RouteProps> = () => {
         </Grid>
 
 
-        <Grid item container justifyContent="end">
+        <Grid container justifyContent="end">
             <Typography variant={"body2"}
-                        sx={{color: '#c4c4c4', fontSize: '12px', marginRight:2}}> <a href={"/forgot-password"}>Forgot your password?</a></Typography>
+                        sx={{color: '#c4c4c4', fontSize: '12px', marginRight: 2}}> <a href={"/forgot-password"}>Forgot your password?</a></Typography>
         </Grid>
 
-        <Grid item container justifyContent="center" alignItems={"stretch"} >
+        <Grid container justifyContent="center" alignItems={"stretch"}>
             <Button variant={"outlined"}
                     disabled={!formValid}
                     onClick={onSignIn}
@@ -137,8 +116,8 @@ const SignInScreen: React.FC<RouteProps> = () => {
             >Sign in</Button>
         </Grid>
 
-        <Grid item container justifyContent="center" alignItems={"stretch"} >
-            {errorMessage && <Alert severity={"error"}>{errorMessage}</Alert>}
+        <Grid container justifyContent="center" alignItems={"stretch"}>
+            {authStore.errorMessage && <Alert severity={"error"}>{authStore.errorMessage}</Alert>}
         </Grid>
 
 

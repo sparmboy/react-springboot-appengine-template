@@ -1,23 +1,21 @@
 import {RouteProps} from "react-router";
 import {
-    Grid, Paper, Switch, Typography,
+    Grid2 as Grid, Paper, Switch, Typography,
 } from "@mui/material";
-import './HomeScreen.css';
-import {BackButton} from "../components/navigation/BackButton";
+import '../HomeScreen/HomeScreen.css';
+import {BackButton} from "../../components/navigation/BackButton";
 import {useState} from "react";
-import {WebSocketEventDTO} from "../domain/webSocketEventDTO";
-import {WS_TOPIC_MY_EVENTS} from "../constants/websockets";
+import {WebSocketEventDTO} from "../../domain/webSocketEventDTO";
+import {WS_TOPIC_MY_EVENTS} from "../../constants/websockets";
 import {useSubscription} from "react-stomp-hooks";
 
 
-interface AdminScreenProps  {
-}
 
-const AdminScreen: React.FC<AdminScreenProps & RouteProps> = () => {
+const AdminScreen: React.FC<RouteProps> = () => {
 
     const [status,setStatus] = useState<boolean>(false);
 
-    const onMessage = (msg: any) => {
+    const onMessage = (msg: {body:string}) => {
         const event: WebSocketEventDTO = {...JSON.parse(msg.body) as WebSocketEventDTO};
         setStatus(event.status);
     }
@@ -34,13 +32,13 @@ const AdminScreen: React.FC<AdminScreenProps & RouteProps> = () => {
 
         <BackButton/>
 
-        <Grid item sx={{marginTop: 16}}>
+        <Grid sx={{marginTop: 16}}>
             <img alt="logo" src={"/logo192.png"}/>
         </Grid>
 
         <div className="circle-right"/>
 
-        <Grid item container justifyContent="center" alignItems={"stretch"} >
+        <Grid container justifyContent="center" alignItems={"stretch"} >
             <Paper elevation={2} sx={{p:5}}>
                 <Typography> This is the admin page. The switch below is being controlled by web socket events from the server</Typography>
                 <Switch checked={status}/>

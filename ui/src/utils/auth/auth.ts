@@ -1,47 +1,17 @@
 import { host, loginApi} from "../../services/apiConfig";
-import React, {Dispatch} from "react";
 import {ACCESS_TOKEN, TARGET_URL} from "../../constants/session";
 import {UserRole} from "../../constants/roles";
 import {ROUTE_LOGIN} from "../../constants/routes";
 import {UserDTO} from "@react-springboot-appengine-template/api/dist";
 import {NavigateFunction} from "react-router/dist/lib/hooks";
 
-export type AuthState = {
-    authenticating: boolean,
-    accessToken?: string,
-    user?: UserDTO
-}
 
-export const initialAuthState: AuthState = {
-    authenticating: false
-};
+export const getAuthorizationHeader = ():string => ('Bearer ' + localStorage.getItem(ACCESS_TOKEN));
 
-export const authReducer = (_state: AuthState, action: AuthAction): AuthState => {
-    switch (action.type) {
-        case 'success':
-            if(action.authState.accessToken) {
-                localStorage.setItem(ACCESS_TOKEN, action.authState.accessToken);
-            }
-            return {...action.authState,authenticating: false};
-        case 'failure':
-            localStorage.removeItem(ACCESS_TOKEN);
-            return {authenticating: false};
-        case 'authenticating':
-            return {authenticating: true};
-        default:
-            throw new Error();
+export const getCurrentUser = (): Promise<UserDTO> => {
+    if(!localStorage.getItem(ACCESS_TOKEN)) {
+        return Promise.reject("No access token set.");
     }
-}
-
-export type AuthAction =
-    | { type: 'authenticating' }
-    | { type: 'success', authState: AuthState }
-    | { type: 'failure', error: string };
-
-export const AuthDispatchContext = React.createContext<Dispatch<AuthAction> | null>(null);
-export const AuthStateContext = React.createContext<AuthState>(initialAuthState);
-
-const request = (options:any):Promise<any> => {
     const headers = new Headers({
         'Content-Type': 'application/json',
     })
@@ -50,10 +20,10 @@ const request = (options:any):Promise<any> => {
         headers.append('Authorization', getAuthorizationHeader())
     }
 
-    const defaults = {headers: headers};
-    options = Object.assign({}, defaults, options);
-
-    return fetch(options.url, options)
+    return fetch(host + "/api/user/me", {
+        method: 'GET',
+        headers:headers
+    })
         .then(response =>
             response.json().then(json => {
                 if(!response.ok) {
@@ -62,19 +32,6 @@ const request = (options:any):Promise<any> => {
                 return json;
             })
         );
-};
-
-export const getAuthorizationHeader = ():string => ('Bearer ' + localStorage.getItem(ACCESS_TOKEN));
-
-export const getCurrentUser = (): Promise<UserDTO> => {
-    if(!localStorage.getItem(ACCESS_TOKEN)) {
-        return Promise.reject("No access token set.");
-    }
-
-    return request({
-        url: host + "/api/user/me",
-        method: 'GET'
-    });
 }
 
 /**
