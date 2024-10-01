@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://example.com/dto/responses/orderResponse.schema.json",
+  "title": "OrderResponse",
+  "description": "Contains details of a successful order",
+  "type": "object",
+  "required": [
+    "id"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "ID",
+      "description": "The unique generated id for this order"
+    }
+  }
+}

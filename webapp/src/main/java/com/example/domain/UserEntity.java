@@ -4,6 +4,7 @@ import com.example.domain.enums.AuthProvider;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.Collection;
+import java.util.Optional;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -34,9 +35,10 @@ public class UserEntity {
     @Column(nullable = false)
     private String email;
 
+    @Column(name="IMAGE_URL")
     private String imageUrl;
 
-    @Column(nullable = false)
+    @Column(nullable = false,name = "EMAIL_VERIFIED")
     private Boolean emailVerified = false;
 
     @JsonIgnore
@@ -46,11 +48,12 @@ public class UserEntity {
     @Enumerated(EnumType.STRING)
     private AuthProvider provider;
 
+    @Column(name="PROVIDER_ID")
     private String providerId;
 
     @ManyToMany
     @JoinTable(
-        name = "USER_TO_ROLES",
+        name = "USER_ROLES",
         joinColumns = @JoinColumn(
             name = "USER_ID", referencedColumnName = "ID"),
         inverseJoinColumns = @JoinColumn(

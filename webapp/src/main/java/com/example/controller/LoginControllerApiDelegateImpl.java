@@ -120,6 +120,7 @@ public class LoginControllerApiDelegateImpl implements LoginControllerApiDelegat
 
     @Override
     public ResponseEntity<AuthResponse> authenticateUser(LoginRequest loginRequest) {
+        log.debug("Attempting to login {}",loginRequest);
         Authentication authentication = authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(
                 loginRequest.getEmail(),

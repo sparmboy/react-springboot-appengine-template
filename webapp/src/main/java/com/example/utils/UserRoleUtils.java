@@ -1,6 +1,6 @@
 package com.example.utils;
 
-import com.example.domain.UserPrivilegeEntity;
+import com.example.domain.UserPermissionEntity;
 import com.example.domain.UserRoleEntity;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,12 +17,12 @@ public class UserRoleUtils {
     private static List<String> getPrivileges(Collection<UserRoleEntity> roles) {
 
         List<String> privileges = new ArrayList<>();
-        List<UserPrivilegeEntity> collection = new ArrayList<>();
+        List<UserPermissionEntity> collection = new ArrayList<>();
         for (UserRoleEntity role : roles) {
             privileges.add(role.getName());
-            collection.addAll(role.getPrivileges());
+            collection.addAll(role.getPermissions());
         }
-        for (UserPrivilegeEntity item : collection) {
+        for (UserPermissionEntity item : collection) {
             privileges.add(item.getName());
         }
         return privileges;

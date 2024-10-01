@@ -1,0 +1,66 @@
+-- liquibase formatted sql
+-- changeset spencer:0001-webapp-init.sql
+
+create table PERMISSIONS
+(
+    ID            VARCHAR(255) NOT NULL,
+    CREATED_BY    VARCHAR(255) NOT NULL,
+    CREATED_DATE  TIMESTAMP    NOT NULL,
+    MODIFIED_BY   VARCHAR(255) NOT NULL,
+    MODIFIED_DATE TIMESTAMP    NOT NULL,
+    VERSION       INTEGER,
+    NAME          VARCHAR(255),
+    primary key (id),
+    unique key (NAME)
+) ENGINE = InnoDb
+  DEFAULT CHARSET = utf8;
+
+create table ROLE
+(
+    ID            VARCHAR(255) NOT NULL,
+    CREATED_BY    VARCHAR(255) NOT NULL,
+    CREATED_DATE  TIMESTAMP    NOT NULL,
+    MODIFIED_BY   VARCHAR(255) NOT NULL,
+    MODIFIED_DATE TIMESTAMP    NOT NULL,
+    VERSION       INTEGER,
+    NAME          VARCHAR(255),
+    PRIMARY KEY (ID),
+    unique key (NAME)
+) ENGINE = InnoDb
+  DEFAULT CHARSET = utf8;
+
+create table USER
+(
+    ID             VARCHAR(255) NOT NULL,
+    EMAIL          VARCHAR(255) NOT NULL,
+    IMAGE_URL      VARCHAR(255),
+    NAME           VARCHAR(255) NOT NULL,
+    PASSWORD       VARCHAR(255),
+    PROVIDER       VARCHAR(255),
+    PROVIDER_ID    VARCHAR(255),
+    EMAIL_VERIFIED BOOLEAN      NOT NULL,
+    primary key (ID),
+    UNIQUE (EMAIL)
+) ENGINE = InnoDb
+  DEFAULT CHARSET = utf8;
+
+
+create table ROLE_PERMISSIONS
+(
+    ROLE_ID       VARCHAR(255) NOT NULL,
+    PERMISSION_ID VARCHAR(255) NOT NULL,
+    FOREIGN KEY (`PERMISSION_ID`) REFERENCES PERMISSIONS (`ID`),
+    FOREIGN KEY (`ROLE_ID`) REFERENCES ROLE (`ID`)
+
+) ENGINE = InnoDb
+  DEFAULT CHARSET = utf8;
+
+create table USER_ROLES
+(
+    USER_ID VARCHAR(255) not null,
+    ROLE_ID VARCHAR(255) not null,
+    FOREIGN KEY (`USER_ID`) REFERENCES USER (`ID`),
+    FOREIGN KEY (`ROLE_ID`) REFERENCES ROLE (`ID`)
+) ENGINE = InnoDb
+  DEFAULT CHARSET = utf8;
+

@@ -1,0 +1,47 @@
+# syntax=docker/dockerfile:1.4
+
+FROM maven:3.8.3-openjdk-17 as deps
+
+WORKDIR /opt/app
+COPY api/pom.xml api/pom.xml
+COPY ui/pom.xml ui/pom.xml
+COPY webapp/pom.xml webapp/pom.xml
+
+COPY pom.xml .
+RUN mvn -B -e -C org.apache.maven.plugins:maven-dependency-plugin:3.1.2:go-offline -P frontend
+
+# cache as most as possible in this multistage dockerfile.
+FROM maven:3.8.3-openjdk-17 as build
+
+WORKDIR /opt/app
+
+COPY --from=deps /root/.m2 /root/.m2
+COPY --from=deps /opt/app/ /opt/app
+
+COPY pom.xml /opt/app/pom.xml
+
+COPY api/pom.xml /opt/app/api/pom.xml
+COPY api/src /opt/app/api/src
+COPY api/package.json /opt/app/api/package.json
+COPY api/tsconfig.json /opt/app/api/tsconfig.json
+
+COPY ui/src /opt/app/ui/src
+COPY ui/nginx /opt/app/ui/nginx
+COPY ui/package.json /opt/app/ui/package.json
+COPY ui/tsconfig.* /opt/app/ui
+COPY ui/.eslintignore /opt/app/ui/.eslintignore
+COPY ui/eslint.config.js /opt/app/ui/eslint.config.js
+COPY ui/index.html /opt/app/ui/index.html
+COPY ui/pom.xml /opt/app/ui/pom.xml
+COPY ui/vite.config.ts /opt/app/ui/vite.config.ts
+
+
+# use -o (--offline) if you didn't need to exclude artifacts.
+# if you have excluded artifacts, then remove -o flag
+RUN mvn -B -e clean install -P frontend
+
+
+FROM nginx:1.13-alpine
+
+COPY --from=build /opt/app/ui/nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /opt/app/ui/dist /usr/share/nginx/html

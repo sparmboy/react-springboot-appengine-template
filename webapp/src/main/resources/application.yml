@@ -3,19 +3,13 @@
 #######################################
 jasypt.encryptor.password: ${ENC_PASSWORD}
 
-#######################################
-# G O O G L E    C L O U D
-#######################################
-spring.cloud.gcp.projectId: 123 #!!!enter-your-gcloud-project-id!!!
-spring:
-  cloud:
-    config:
-      import-check:
-        enabled: false
+
 
 #######################################
 # G O O G L E    O A U T H
 #######################################
+spring:
+
   security:
     oauth2:
       client:
@@ -46,6 +40,8 @@ spring:
             authorization-uri: https://appleid.apple.com/auth/authorize?response_mode=form_post
             token-uri: https://appleid.apple.com/auth/token
             jwkSetUri: https://appleid.apple.com/auth/keys
+
+
 #######################################
 # A P P L I C A T I O N
 #######################################
@@ -54,7 +50,8 @@ baseUrl: http://localhost:8080
 logging:
   level:
     root: ERROR
-    app: ERROR
+    com.example: TRACE
+    org.springframework: DEBUG
 app:
   auth:
     tokenSecret: 6969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969 #!!ENTER_A_GENERATED_SECRET_HERE!!

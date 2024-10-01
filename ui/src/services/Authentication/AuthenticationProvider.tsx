@@ -74,7 +74,7 @@ export const AuthenticationProvider:FC<React.PropsWithChildren > = ({children}) 
         errorMessage
     }
 
-    useEffect(authenticate, [navigate, setUserAndNavigate]);
+    useEffect(authenticate, []);
 
 
     return authenticating ? <LoadingScreen/> : <AuthContext.Provider value={authState}>{children}</AuthContext.Provider>

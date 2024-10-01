@@ -39,6 +39,7 @@ export const getCurrentUser = (): Promise<UserDTO> => {
  * retrieved after log in
  */
 export const saveCurrentUrl = () => {
+    console.log("Saving current url as ",window.location.href);
     localStorage.setItem(TARGET_URL, window.location.href );
 }
 

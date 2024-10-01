@@ -9,7 +9,7 @@
         <groupId>com.example</groupId>
         <artifactId>react-springboot-appengine-template-parent</artifactId>
         <version>1.0.0-SNAPSHOT</version>
-        <relativePath>../</relativePath>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <properties>
@@ -73,168 +73,414 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+    <profiles>
 
+        <profile>
+            <id>both</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+
+            <build>
+                <plugins>
+
+                    <!-- Removes the Swagger UI from being generated -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>1.7</version>
+                        <executions>
+                            <execution>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <delete>
+                                            <fileset dir="${project.build.directory}/generated-sources" includes="**/OpenApiGeneratorApplication.java" />
+                                            <fileset dir="${project.build.directory}/generated-sources" includes="**/OpenApiGeneratorApplicationTests.java" />
+
+                                        </delete>
+
+
+                                         <move file="${project.artifactId}-${project.version}.tgz" tofile="../ui/${project.artifactId}.tgz"/>
+
+                                    </target>
+
+
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <version>3.8.1</version>
+                        <configuration>
+                            <source>17</source>
+                            <target>17</target>
+                            <parameters>true</parameters>
+
+                        </configuration>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-clean-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <configuration>
+                            <filesets>
+                                <fileset>
+                                    <directory>${project.build.outputDirectory}</directory>
+                                </fileset>
+                                <fileset>
+                                    <directory>${project.basedir}/dist</directory>
+                                </fileset>
+                            </filesets>
+                        </configuration>
+                    </plugin>
+
+                    <!-- Generate the typescript API -->
+                    <plugin>
+                        <groupId>org.openapitools</groupId>
+                        <artifactId>openapi-generator-maven-plugin</artifactId>
+                        <version>${openapi.version}</version>
+                        <executions>
+                            <execution>
+                                <id>generate-typescript-client</id>
+                                <goals>
+                                    <goal>generate</goal>
+                                </goals>
+                                <configuration>
+                                    <inputSpec>${basedir}/src/main/resources/swagger.json</inputSpec>
+                                    <generatorName>typescript-fetch</generatorName>
+                                    <output>${basedir}/target/ts</output>
+                                    <additionalProperties>
+                                        <additionalProperty>typescriptThreePlus=true</additionalProperty>
+                                    </additionalProperties>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>generate-java</id>
+                                <goals>
+                                    <goal>generate</goal>
+                                </goals>
+                                <configuration>
+                                    <inputSpec>${basedir}/src/main/resources/swagger.json</inputSpec>
+                                    <generatorName>spring</generatorName>
+                                    <ignoreFileOverride>${project.basedir}/.openapi-generator-ignore</ignoreFileOverride>
+                                    <modelPackage>${project.groupId}.model</modelPackage>
+                                    <apiPackage>${project.groupId}.controllers</apiPackage>
+                                    <generateModels>true</generateModels>
+                                    <configOptions>
+                                        <basePackage>${project.groupId}</basePackage>
+                                        <configPackage>${project.groupId}.config</configPackage>
+                                        <java8>true</java8>
+                                        <dateLibrary>java8</dateLibrary>
+                                        <performBeanValidation>true</performBeanValidation>
+                                        <useTags>true</useTags>
+                                        <useOptional>true</useOptional>
+                                        <generateApiTests>false</generateApiTests>
+                                        <generateApiDocumentation>false</generateApiDocumentation>
+                                        <supportingFiles>false</supportingFiles>
+                                        <serializableModel>true</serializableModel>
+                                        <delegatePattern>true</delegatePattern>
+                                        <supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>
+                                        <useSpringBoot3>true</useSpringBoot3>
+                                    </configOptions>
+
+                                </configuration>
+                            </execution>
+                        </executions>
+
+                    </plugin>
+
+                    <!-- Package the UI components -->
+                    <plugin>
+                        <groupId>com.github.eirslett</groupId>
+                        <artifactId>frontend-maven-plugin
+                        </artifactId>                <!-- Use the latest released version: https://repo1.maven.org/maven2/com/github/eirslett/frontend-maven-plugin/ -->
+                        <version>1.10.2</version>
+                        <configuration>
+                            <workingDirectory>${basedir}</workingDirectory>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>install node and npm</id>
+                                <goals>
+                                    <goal>install-node-and-npm</goal>
+                                </goals>
+                                <configuration>
+                                    <nodeVersion>v12.9.1</nodeVersion>
+                                    <npmVersion>6.11.2</npmVersion>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>npm install</id>
+                                <goals>
+                                    <goal>npm</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments>install</arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>npm build</id>
+                                <goals>
+                                    <goal>npm</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments>run build</arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>npm pack</id>
+                                <goals>
+                                    <goal>npm</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments>pack</arguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+
+
+
+        </profile>
+
+
+        <profile>
+            <id>backend</id>
+            <build>
+                <plugins>
+
+                    <!-- Removes the Swagger UI from being generated -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>1.7</version>
+                        <executions>
+                            <execution>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <tasks>
+                                        <delete>
+                                            <fileset dir="${project.build.directory}/generated-sources" includes="**/OpenApiGeneratorApplication.java" />
+                                            <fileset dir="${project.build.directory}/generated-sources" includes="**/OpenApiGeneratorApplicationTests.java" />
+
+                                        </delete>
+                                    </tasks>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <version>3.8.1</version>
+                        <configuration>
+                            <source>17</source>
+                            <target>17</target>
+                            <parameters>true</parameters>
+
+                        </configuration>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-clean-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <configuration>
+                            <filesets>
+                                <fileset>
+                                    <directory>${project.build.outputDirectory}</directory>
+                                </fileset>
+                                <fileset>
+                                    <directory>${project.basedir}/dist</directory>
+                                </fileset>
+                            </filesets>
+                        </configuration>
+                    </plugin>
+
+                    <!-- Generate the Spring API -->
+                    <plugin>
+                        <groupId>org.openapitools</groupId>
+                        <artifactId>openapi-generator-maven-plugin</artifactId>
+                        <version>${openapi.version}</version>
+                        <executions>
+
+                            <execution>
+                                <id>generate-java</id>
+                                <goals>
+                                    <goal>generate</goal>
+                                </goals>
+                                <configuration>
+                                    <inputSpec>${basedir}/src/main/resources/swagger.json</inputSpec>
+                                    <generatorName>spring</generatorName>
+                                    <ignoreFileOverride>${project.basedir}/.openapi-generator-ignore</ignoreFileOverride>
+                                    <modelPackage>${project.groupId}.model</modelPackage>
+                                    <apiPackage>${project.groupId}.controllers</apiPackage>
+                                    <generateModels>true</generateModels>
+                                    <configOptions>
+                                        <basePackage>${project.groupId}</basePackage>
+                                        <configPackage>${project.groupId}.config</configPackage>
+                                        <java8>true</java8>
+                                        <dateLibrary>java8</dateLibrary>
+                                        <performBeanValidation>true</performBeanValidation>
+                                        <useTags>true</useTags>
+                                        <useOptional>true</useOptional>
+                                        <generateApiTests>false</generateApiTests>
+                                        <generateApiDocumentation>false</generateApiDocumentation>
+                                        <supportingFiles>false</supportingFiles>
+                                        <serializableModel>true</serializableModel>
+                                        <delegatePattern>true</delegatePattern>
+                                        <supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>
+                                        <useSpringBoot3>true</useSpringBoot3>
+                                    </configOptions>
+
+                                </configuration>
+                            </execution>
+                        </executions>
+
+                    </plugin>
+
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>frontend</id>
+
+            <build>
+                <plugins>
+
+                    <!-- Removes the Swagger UI from being generated -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>1.7</version>
+                        <executions>
+                            <execution>
+                                <id>Copy TS package To UI</id>
+                                <phase>prepare-package</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <move file="${project.artifactId}-${project.version}.tgz" tofile="../ui/${project.artifactId}.tgz"/>
+
+                                    </target>
+                                </configuration>
+                            </execution>                        </executions>
+                    </plugin>
+
+
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-clean-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <configuration>
+                            <filesets>
+                                             <fileset>
+                                    <directory>${project.basedir}/dist</directory>
+                                </fileset>
+                            </filesets>
+                        </configuration>
+                    </plugin>
+
+                    <!-- Generate the typescript API -->
+                    <plugin>
+                        <groupId>org.openapitools</groupId>
+                        <artifactId>openapi-generator-maven-plugin</artifactId>
+                        <version>${openapi.version}</version>
+                        <executions>
+                            <execution>
+                                <id>generate-typescript-client</id>
+                                <goals>
+                                    <goal>generate</goal>
+                                </goals>
+                                <configuration>
+                                    <inputSpec>${basedir}/src/main/resources/swagger.json</inputSpec>
+                                    <generatorName>typescript-fetch</generatorName>
+                                    <output>${basedir}/target/ts</output>
+                                    <additionalProperties>
+                                        <additionalProperty>typescriptThreePlus=true</additionalProperty>
+                                    </additionalProperties>
+                                </configuration>
+                            </execution>
+                        </executions>
+
+                    </plugin>
+
+                    <!-- Package the UI components -->
+                    <plugin>
+                        <groupId>com.github.eirslett</groupId>
+                        <artifactId>frontend-maven-plugin
+                        </artifactId>                <!-- Use the latest released version: https://repo1.maven.org/maven2/com/github/eirslett/frontend-maven-plugin/ -->
+                        <version>1.10.2</version>
+                        <configuration>
+                            <workingDirectory>${basedir}</workingDirectory>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>install node and npm</id>
+                                <goals>
+                                    <goal>install-node-and-npm</goal>
+                                </goals>
+                                <configuration>
+                                    <nodeVersion>v12.9.1</nodeVersion>
+                                    <npmVersion>6.11.2</npmVersion>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>npm install</id>
+                                <goals>
+                                    <goal>npm</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments>install</arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>npm build</id>
+                                <goals>
+                                    <goal>npm</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments>run build</arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>npm pack</id>
+                                <goals>
+                                    <goal>npm</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments>pack</arguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+
+
+        </profile>
+    </profiles>
 
     <build>
 
-        <plugins>
 
-            <!-- Removes the Swagger UI from being generated -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.7</version>
-                <executions>
-                    <execution>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <tasks>
-                                <delete>
-                                    <fileset dir="${project.build.directory}/generated-sources" includes="**/OpenApiGeneratorApplication.java" />
-                                    <fileset dir="${project.build.directory}/generated-sources" includes="**/OpenApiGeneratorApplicationTests.java" />
 
-                                </delete>
-                            </tasks>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
-                <configuration>
-                    <source>17</source>
-                    <target>17</target>
-                    <parameters>true</parameters>
-
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-clean-plugin</artifactId>
-                <version>3.1.0</version>
-                <configuration>
-                    <filesets>
-                        <fileset>
-                            <directory>${project.build.outputDirectory}</directory>
-                        </fileset>
-                        <fileset>
-                            <directory>${project.basedir}/dist</directory>
-                        </fileset>
-                    </filesets>
-                </configuration>
-            </plugin>
-
-            <!-- Generate the typescript API -->
-            <plugin>
-                <groupId>org.openapitools</groupId>
-                <artifactId>openapi-generator-maven-plugin</artifactId>
-                <version>${openapi.version}</version>
-                <executions>
-                    <execution>
-                        <id>generate-typescript-client</id>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <configuration>
-                            <inputSpec>${basedir}/src/main/resources/swagger.json</inputSpec>
-                            <generatorName>typescript-fetch</generatorName>
-                            <output>${basedir}/target/ts</output>
-                            <additionalProperties>
-                                <additionalProperty>typescriptThreePlus=true</additionalProperty>
-                            </additionalProperties>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>generate-java</id>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <configuration>
-                            <inputSpec>${basedir}/src/main/resources/swagger.json</inputSpec>
-                            <generatorName>spring</generatorName>
-                            <ignoreFileOverride>${project.basedir}/.openapi-generator-ignore</ignoreFileOverride>
-                            <modelPackage>${project.groupId}.model</modelPackage>
-                            <apiPackage>${project.groupId}.controllers</apiPackage>
-                            <generateModels>true</generateModels>
-                            <configOptions>
-                                <basePackage>${project.groupId}</basePackage>
-                                <configPackage>${project.groupId}.config</configPackage>
-                                <java8>true</java8>
-                                <dateLibrary>java8</dateLibrary>
-                                <performBeanValidation>true</performBeanValidation>
-                                <useTags>true</useTags>
-                                <useOptional>true</useOptional>
-                                <generateApiTests>false</generateApiTests>
-                                <generateApiDocumentation>false</generateApiDocumentation>
-                                <supportingFiles>false</supportingFiles>
-                                <serializableModel>true</serializableModel>
-                                <delegatePattern>true</delegatePattern>
-                                <supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>
-                                <useSpringBoot3>true</useSpringBoot3>
-                            </configOptions>
-
-                        </configuration>
-                    </execution>
-                </executions>
-
-            </plugin>
-
-            <!-- Package the UI components -->
-            <plugin>
-                <groupId>com.github.eirslett</groupId>
-                <artifactId>frontend-maven-plugin
-                </artifactId>                <!-- Use the latest released version: https://repo1.maven.org/maven2/com/github/eirslett/frontend-maven-plugin/ -->
-                <version>1.10.2</version>
-                <configuration>
-                    <workingDirectory>${basedir}</workingDirectory>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>install node and npm</id>
-                        <goals>
-                            <goal>install-node-and-npm</goal>
-                        </goals>
-                        <configuration>
-                            <nodeVersion>v12.9.1</nodeVersion>
-                            <npmVersion>6.11.2</npmVersion>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>npm install</id>
-                        <goals>
-                            <goal>npm</goal>
-                        </goals>
-                        <configuration>
-                            <arguments>install</arguments>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>npm build</id>
-                        <goals>
-                            <goal>npm</goal>
-                        </goals>
-                        <configuration>
-                            <arguments>run build</arguments>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>npm pack</id>
-                        <goals>
-                            <goal>npm</goal>
-                        </goals>
-                        <configuration>
-                            <arguments>pack</arguments>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
 
     </build>
 </project>

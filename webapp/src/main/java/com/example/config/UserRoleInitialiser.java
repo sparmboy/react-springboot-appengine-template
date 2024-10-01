@@ -9,7 +9,7 @@ import com.example.dao.repository.UserPrivilegeRepository;
 import com.example.dao.repository.UserRepository;
 import com.example.dao.repository.UserRoleRepository;
 import com.example.domain.UserEntity;
-import com.example.domain.UserPrivilegeEntity;
+import com.example.domain.UserPermissionEntity;
 import com.example.domain.UserRoleEntity;
 import com.example.domain.exceptions.ResourceNotFoundException;
 import java.util.Arrays;
@@ -50,18 +50,27 @@ public class UserRoleInitialiser implements ApplicationListener<ContextRefreshed
         if (alreadySetup) {
             return;
         }
-        UserPrivilegeEntity readPrivilege = createPrivilegeIfNotFound(PRIVILEGE_READ);
-        UserPrivilegeEntity writePrivilege = createPrivilegeIfNotFound(PRIVILEGE_WRITE);
+        UserPermissionEntity readPrivilege = createPrivilegeIfNotFound(PRIVILEGE_READ);
+        UserPermissionEntity writePrivilege = createPrivilegeIfNotFound(PRIVILEGE_WRITE);
 
-        List<UserPrivilegeEntity> adminPrivileges = Arrays.asList(readPrivilege, writePrivilege);
+        List<UserPermissionEntity> adminPrivileges = Arrays.asList(readPrivilege, writePrivilege);
         createRoleIfNotFound(ROLE_ADMIN, adminPrivileges);
         createRoleIfNotFound(ROLE_USER, Collections.singletonList(readPrivilege));
 
         UserRoleEntity adminRole = userRoleRepository.findByName(ROLE_ADMIN).orElseThrow(() -> new ResourceNotFoundException(UserRoleEntity.class.getName(), "name", ROLE_ADMIN));
         UserRoleEntity userRole = userRoleRepository.findByName(ROLE_USER).orElseThrow(() -> new ResourceNotFoundException(UserRoleEntity.class.getName(), "name", ROLE_USER));
 
-        userRepository.save(createAdmin(Arrays.asList(userRole,adminRole)));
-        userRepository.save(createUser(Collections.singletonList(userRole)));
+        UserEntity adminUser = createAdmin(Arrays.asList(userRole,adminRole));
+        UserEntity defaultUser = createUser(Collections.singletonList(userRole));
+
+        if(userRepository.findByEmail(adminUser.getEmail()).isEmpty()) {
+            userRepository.save(adminUser);
+        }
+
+        if(userRepository.findByEmail(defaultUser.getEmail()).isEmpty()) {
+            userRepository.save(defaultUser);
+        }
+
 
         alreadySetup = true;
     }
@@ -87,12 +96,12 @@ public class UserRoleInitialiser implements ApplicationListener<ContextRefreshed
     }
 
     @Transactional
-    UserPrivilegeEntity createPrivilegeIfNotFound(String name) {
-        return userPrivilegeRepository.findByName(name).orElseGet(()-> userPrivilegeRepository.save(new UserPrivilegeEntity(name)));
+    UserPermissionEntity createPrivilegeIfNotFound(String name) {
+        return userPrivilegeRepository.findByName(name).orElseGet(()-> userPrivilegeRepository.save(new UserPermissionEntity(name)));
     }
 
     @Transactional
-    UserRoleEntity createRoleIfNotFound(String name, Collection<UserPrivilegeEntity> privileges) {
+    UserRoleEntity createRoleIfNotFound(String name, Collection<UserPermissionEntity> privileges) {
         return userRoleRepository.findByName(name).orElseGet(()->userRoleRepository.save( new UserRoleEntity(name,privileges) ) );
     }
 

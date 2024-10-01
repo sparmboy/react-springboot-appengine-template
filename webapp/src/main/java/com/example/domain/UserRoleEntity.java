@@ -15,7 +15,7 @@ import org.hibernate.annotations.GenericGenerator;
 @NoArgsConstructor
 public class UserRoleEntity extends AbstractBaseEntity{
 
-    public final static String TABLE_NAME = "USER_ROLES";
+    public final static String TABLE_NAME = "ROLE";
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -33,13 +33,13 @@ public class UserRoleEntity extends AbstractBaseEntity{
 
     @ManyToMany
     @JoinTable(
-        name = "ROLES_TO_PRIVILEGES",
+        name = "ROLE_PERMISSIONS",
         joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"),
-        inverseJoinColumns = @JoinColumn(name = "privilege_id", referencedColumnName = "id"))
-    private Collection<UserPrivilegeEntity> privileges;
+        inverseJoinColumns = @JoinColumn(name = "permission_id", referencedColumnName = "id"))
+    private Collection<UserPermissionEntity> permissions;
 
-    public UserRoleEntity(String name, Collection<UserPrivilegeEntity> privileges) {
+    public UserRoleEntity(String name, Collection<UserPermissionEntity> permissions) {
         this.name = name;
-        this.privileges = privileges;
+        this.permissions = permissions;
     }
 }

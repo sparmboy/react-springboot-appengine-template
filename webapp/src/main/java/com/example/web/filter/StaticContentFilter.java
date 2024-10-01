@@ -24,20 +24,38 @@ import org.springframework.stereotype.Component;
 @Component
 public class StaticContentFilter implements Filter {
 
-    private List<String> fileExtensions = Arrays.asList("html", "js", "json", "csv", "css", "png", "svg", "eot", "ttf", "woff","'woff2", "appcache", "jpg", "jpeg", "gif", "ico");
+    private List<String> fileExtensions = Arrays.asList("html", "js", "json", "csv", "css", "png", "svg", "eot", "ttf", "woff", "'woff2", "appcache", "jpg", "jpeg", "gif", "ico");
 
     /**
      * This is the list of all route prefixes within your react routing
      * that a user might directly enter as a URL
      */
-    private List<String> ROUTES = Collections.singletonList("/lamps/");
+    public static List<String> ROUTES = Arrays.asList(
+        "/login",
+        "/signup",
+        "/signin",
+        "/admin",
+        "/login",
+        "/success",
+        "/unauthorised"
+
+    );
+
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(
+        ServletRequest request,
+        ServletResponse response,
+        FilterChain chain
+    ) throws IOException, ServletException {
         doFilter((HttpServletRequest) request, (HttpServletResponse) response, chain);
     }
 
-    private void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
+    private void doFilter(
+        HttpServletRequest request,
+        HttpServletResponse response,
+        FilterChain chain
+    ) throws IOException, ServletException {
         String path = stripRoutes(request.getServletPath());
 
         boolean isApi = path.startsWith("/api");
@@ -55,8 +73,8 @@ public class StaticContentFilter implements Filter {
     }
 
     private String stripRoutes(String servletPath) {
-        for( String route : ROUTES) {
-            if( servletPath.startsWith(route)) {
+        for (String route : ROUTES) {
+            if (servletPath.startsWith(route)) {
                 servletPath = servletPath.substring(route.length());
             }
         }
@@ -64,11 +82,14 @@ public class StaticContentFilter implements Filter {
     }
 
 
-    private void resourceToResponse(String resourcePath, HttpServletResponse response) throws IOException {
+    private void resourceToResponse(
+        String resourcePath,
+        HttpServletResponse response
+    ) throws IOException {
         try {
             InputStream inputStream = new ClassPathResource(resourcePath).getInputStream();
-            response.setHeader("Content-Type", fileExtensionToMimeType(resourcePath.substring(resourcePath.lastIndexOf(".")+1)));
-            IOUtils.copy(inputStream,response.getOutputStream());
+            response.setHeader("Content-Type", fileExtensionToMimeType(resourcePath.substring(resourcePath.lastIndexOf(".") + 1)));
+            IOUtils.copy(inputStream, response.getOutputStream());
         } catch (IOException e) {
             response.sendError(NOT_FOUND.value(), NOT_FOUND.getReasonPhrase());
         }
@@ -76,16 +97,26 @@ public class StaticContentFilter implements Filter {
 
     private String fileExtensionToMimeType(String extension) {
         switch (extension) {
-            case "js": return "application/javascript";
-            case "map": return "text/css";
-            case "css": return "text/css";
-            case "html": return "text/html";
-            case "json": return "application/json";
-            case "ico": return "image/x-icon";
-            case "png": return "image/png";
-            case "jpeg": return "image/jpeg";
-            case "woff": return "text/css";
-            case "woff2": return "text/css";
+            case "js":
+                return "application/javascript";
+            case "map":
+                return "text/css";
+            case "css":
+                return "text/css";
+            case "html":
+                return "text/html";
+            case "json":
+                return "application/json";
+            case "ico":
+                return "image/x-icon";
+            case "png":
+                return "image/png";
+            case "jpeg":
+                return "image/jpeg";
+            case "woff":
+                return "text/css";
+            case "woff2":
+                return "text/css";
 
         }
         throw new RuntimeException("File extenstion '." + extension + "' not supported");

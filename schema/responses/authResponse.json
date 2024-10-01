@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://example.com/dto/responses/authResponse.schema.json",
+  "title": "AuthResponse",
+  "description": "The status of the authentication",
+  "type": "object",
+  "required": [
+    "accessToken",
+    "tokenType",
+    "user"
+  ],
+  "properties": {
+    "accessToken": {
+      "$id": "#/properties/accessToken",
+      "name": "Access Token",
+      "description": "The accessToken for the user",
+      "type": "string"
+    },
+    "tokenType": {
+      "$id": "#/properties/tokenType",
+      "name": "tokenType",
+      "description": "The type of token",
+      "type": "string",
+      "default": "Bearer"
+    },
+    "user": {
+      "$ref": "../userDTO.json"
+    }
+  }
+}

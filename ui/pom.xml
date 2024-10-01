@@ -7,7 +7,6 @@
         <artifactId>react-springboot-appengine-template-parent</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
-    <packaging>war</packaging>
     <properties>
         <buildCommand>build</buildCommand>
     </properties>
@@ -49,30 +48,7 @@
     </profiles>
     <build>
         <plugins>            <!-- Installs NPM -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-clean-plugin</artifactId>
-                <version>3.1.0</version>
-                <executions>
-                    <execution>
-                        <id>clear bower</id>
-                        <goals>
-                            <goal>clean</goal>
-                        </goals>
-                        <phase>clean</phase>
-                        <configuration>
-                            <filesets>
-                                <fileset>
-                                    <directory>bower_components</directory>
-                                    <followSymlinks>false</followSymlinks>
-                                    <useDefaultExcludes>true</useDefaultExcludes>
-                                </fileset>
-                            </filesets>
-                        </configuration>
-                    </execution>
 
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin
@@ -93,21 +69,12 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>npm install api</id>
-                        <goals>
-                            <goal>npm</goal>
-                        </goals>                        <!-- Optional configuration which provides for running any npm command -->
-                        <configuration>
-                            <arguments>install ../api/react-springboot-appengine-template-api-${project.version}.tgz</arguments>
-                        </configuration>
-                    </execution>
-                    <execution>
                         <id>npm install</id>
                         <goals>
                             <goal>npm</goal>
                         </goals>                        <!-- Optional configuration which provides for running any npm command -->
                         <configuration>
-                            <arguments>install --no-bin-links</arguments>
+                            <arguments>install</arguments>
                         </configuration>
                     </execution>
                     <execution>
@@ -119,31 +86,9 @@
                             <arguments>run ${buildCommand}</arguments>
                         </configuration>
                     </execution>
+
                 </executions>
             </plugin>            <!-- Add the UI code to workflow war -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>3.3.1</version>
-                <executions>
-                    <execution>
-                        <id>default-war</id>
-                        <configuration>
-                            <webResources>
-                                <resource>                                    <!-- this is relative to the pom.xml directory -->
-                                    <directory>${basedir}/build</directory>
-                                </resource>
-                            </webResources>
-                            <outputDirectory>${basedir}/target</outputDirectory>
-                            <warName>${project.artifactId}-${project.version}</warName>
-                            <failOnMissingWebXml>false</failOnMissingWebXml>
-                        </configuration>
-                        <goals>
-                            <goal>war</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
 </project>

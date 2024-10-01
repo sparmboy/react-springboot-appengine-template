@@ -15,7 +15,7 @@
     "@mui/lab": "^6.0.0-beta.9",
     "@mui/material": "^6.0.2",
     "@mui/styles": "^6.0.2",
-    "@react-springboot-appengine-template/api": "file:../api/react-springboot-appengine-template-api-1.0.0-SNAPSHOT.tgz",
+    "@react-springboot-appengine-template/api": "file:./react-springboot-appengine-template-api.tgz",
     "@stomp/stompjs": "^6.1.2",
     "node-fetch": "^3.3.2",
     "react": "^18.3.1",
@@ -39,6 +39,7 @@
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
     "eslint-plugin-react-refresh": "^0.4.9",
     "globals": "^15.9.0",
+    "sass-embedded": "^1.79.3",
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.0.1",
     "vite": "^5.4.1"

@@ -15,11 +15,43 @@
         <spring-cloud.version>Finchley.RELEASE</spring-cloud.version>
     </properties>
 
-    <modules>
-        <module>api</module>
-        <module>ui</module>
-        <module>webapp</module>
-    </modules>
+
+
+    <profiles>
+
+        <profile>
+            <id>both</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>api</module>
+                <module>ui</module>
+                <module>webapp</module>
+            </modules>
+
+        </profile>
+
+
+        <profile>
+            <id>backend</id>
+            <modules>
+                <module>api</module>
+                <module>webapp</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>frontend</id>
+            <modules>
+                <module>api</module>
+                <module>ui</module>
+            </modules>
+
+
+        </profile>
+    </profiles>
+
 
     <dependencyManagement>
         <dependencies>
@@ -47,6 +79,9 @@
 
         </dependencies>
     </dependencyManagement>
+
+
+
 
 
 </project>

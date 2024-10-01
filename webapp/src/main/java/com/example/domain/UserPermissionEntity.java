@@ -9,13 +9,13 @@ import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
-@Table(name = UserPrivilegeEntity.TABLE_NAME)
+@Table(name = UserPermissionEntity.TABLE_NAME)
 @Getter
 @Setter
 @NoArgsConstructor
-public class UserPrivilegeEntity extends AbstractBaseEntity{
+public class UserPermissionEntity extends AbstractBaseEntity{
 
-    public final static String TABLE_NAME = "USER_PRIVILEGES";
+    public final static String TABLE_NAME = "PERMISSIONS";
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -27,11 +27,11 @@ public class UserPrivilegeEntity extends AbstractBaseEntity{
 
     private String name;
 
-    @ManyToMany(mappedBy = "privileges")
+    @ManyToMany(mappedBy = "permissions")
     @JsonIgnore
     private Collection<UserRoleEntity> roles;
 
-    public UserPrivilegeEntity(String name) {
+    public UserPermissionEntity(String name) {
         this.name = name;
     }
 }

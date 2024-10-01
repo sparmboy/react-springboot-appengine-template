@@ -3,6 +3,7 @@ package com.example.config;
 import static com.example.config.WebSocketConfig.TOPIC_MY_EVENT;
 import static com.example.config.WebSocketConfig.TOPIC_PREFIX;
 import static com.example.config.WebSocketConfig.WEBSOCKETS_ENDPOINT;
+import static com.example.web.filter.StaticContentFilter.ROUTES;
 import static org.springframework.security.config.Customizer.withDefaults;
 
 import com.example.security.CustomUserDetailsService;
@@ -14,6 +15,8 @@ import com.example.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepositor
 import com.example.security.oauth2.OAuth2AuthenticationFailureHandler;
 import com.example.security.oauth2.OAuth2AuthenticationSuccessHandler;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -37,6 +40,7 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
 
 @Configuration
 @EnableWebSecurity
@@ -47,69 +51,46 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    public static final List<String> SWAGGER_ROUTES = Arrays.asList(
-        "/swagger-ui.html",
-        "/webjars/springfox-swagger-ui", "/swagger-resources", "/null/swagger-resources", "/v2/api-docs", "/actuator");
+    public static String API_PREFIX = "/api/v1";
+    public static final List<String> SWAGGER_ROUTES = Collections.emptyList();
+    private final long MAX_AGE_SECS = 3600;
 
-    public static final List<String> UNSECURED_PATHS = Arrays.asList("/home",
-        "/login",
-        "/signin",
-        "/signup",
-        "/signup-success",
-        "/oauth2",
-        "/api/user/**",
-        "/api/auth/**",
-        "/api/v1/messages/sms/status",
-        "/",
-        "/*.json",
-        "/*.js",
-        "/**/*.png",
-        "/**/*.gif",
-        "/**/*.svg",
-        "/**/*.jpg",
-        "/**/*.html",
-        "/**/*.css",
-        "/**/*.js",
-        "/error",
-        "/favicon.ico",
-        "/static/**/*",
-        "/static/*"
-    );
 
-    private final static List<String> SECURED_PATHS = Arrays.asList(
-        "/",
-        "/error",
+
+    public static final List<String> UNSECURED_PATHS = Arrays.asList(
+        "/*.png",
         "/favicon.ico",
-        "/static/**/*",
-        "/static/*",
-        "/oauth2",
-        "/api/oauth2",
-        "/api/oauth2/**",
-        "/home",
-        "/login",
-        "/signin",
-        "/*.json",
-        "/*.js",
-        "/**/*.png",
-        "/**/*.gif",
-        "/**/*.svg",
-        "/**/*.jpg",
-        "/**/*.html",
-        "/**/*.css",
-        "/**/*.js",
-        "/app/v2/api-docs",
-        "/api/v1/auth/**",
-        "/api/v1/orders/**",
-        WEBSOCKETS_ENDPOINT + "/**",
+        "/static/js/*.js",
+        "/static/js/*.map",
+        "/",
+        "/manifest.json",
+        "/error",
+        "/static/css/*.css",
+        "/static/css/*.map",
+        "/static/media/*.png",
+        "/static/media/*.png",
+        API_PREFIX + "/user",
+        API_PREFIX + "/auth/login",
+        API_PREFIX + "/auth/verify",
+        API_PREFIX + "/auth/urls",
+        API_PREFIX + "/auth/2fa",
+        WEBSOCKETS_ENDPOINT +"/**",
         TOPIC_PREFIX,
         TOPIC_MY_EVENT
     );
 
 
-    public static final List<String> ANON_PATHS = Stream.concat(
-        SWAGGER_ROUTES.stream().map(r -> r + "/**"),
-        UNSECURED_PATHS.stream()
-    ).collect(Collectors.toList());
+    private final static List<String> SECURED_PATHS = Arrays.asList(
+        API_PREFIX + "/orders/**",
+        API_PREFIX + "/auth/logout"
+    );
+
+
+    public static final List<String> ANON_PATHS = Stream.of(
+        SWAGGER_ROUTES.stream().map(r -> r + "/**").collect(Collectors.toList()),
+        ROUTES,
+        UNSECURED_PATHS
+    ).flatMap(Collection::stream).collect(Collectors.toList());
 
 
     private final CustomUserDetailsService customUserDetailsService;
@@ -162,12 +143,22 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .cors(withDefaults())
+            .cors(cors -> cors.configurationSource(request -> {
+                CorsConfiguration configuration = new CorsConfiguration();
+                configuration.setAllowedOrigins(List.of("*"));
+                configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+                configuration.setAllowedHeaders(List.of("*"));
+                configuration.setMaxAge(MAX_AGE_SECS);
+                return configuration;
+            }))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .csrf(withDefaults())
+            .csrf(AbstractHttpConfigurer::disable)
             .formLogin(AbstractHttpConfigurer::disable)
             .httpBasic(AbstractHttpConfigurer::disable)
-            .exceptionHandling(httpSecurityExceptionHandlingConfigurer -> httpSecurityExceptionHandlingConfigurer.authenticationEntryPoint(new RestAuthenticationEntryPoint()))
+            .exceptionHandling(httpSecurityExceptionHandlingConfigurer ->
+                httpSecurityExceptionHandlingConfigurer.authenticationEntryPoint(new RestAuthenticationEntryPoint())
+            )
+
 
             .authorizeHttpRequests((requests) -> requests
                 .requestMatchers(ANON_PATHS.stream().map(AntPathRequestMatcher::new).toArray(AntPathRequestMatcher[]::new))
@@ -179,8 +170,8 @@ public class SecurityConfig {
                 .permitAll()
                 .anyRequest()
                 .authenticated()
-
             )
+
             .oauth2Login(oauth2 -> oauth2.authorizationEndpoint(customizer -> customizer
                     .baseUri("/api/oauth2/authorize")
                     .authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository))

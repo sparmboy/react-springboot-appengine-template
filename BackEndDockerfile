@@ -1,0 +1,24 @@
+# Copy the dependencies from the DEPS stage with the advantage
+# of using docker layer caches. If something goes wrong from this
+# line on, all dependencies from DEPS were already downloaded and
+# stored in docker's layers.
+FROM maven:3.8.3-openjdk-17 as builder
+WORKDIR /opt/app
+
+COPY pom.xml /opt/app/pom.xml
+COPY api/pom.xml /opt/app/api/pom.xml
+COPY webapp/pom.xml /opt/app/webapp/pom.xml
+
+#RUN mvn -P backend dependency:go-offline
+
+COPY api/src /opt/app/api/src
+COPY webapp/src /opt/app/webapp/src
+
+RUN mvn -P backend clean install -DskipTests=true
+
+
+# At this point, BUILDER stage should have your .jar or whatever in some path
+FROM openjdk:17-alpine
+COPY --from=builder opt/app/webapp/target/*.jar /usr/local/lib/app.jar
+EXPOSE 8080
+ENTRYPOINT ["java","-jar","-Dspring.profiles.active=docker","/usr/local/lib/app.jar"]
