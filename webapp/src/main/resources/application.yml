@@ -10,6 +10,7 @@ jasypt.encryptor.password: ${ENC_PASSWORD}
 #######################################
 spring:
 
+
   security:
     oauth2:
       client:
@@ -42,6 +43,9 @@ spring:
             jwkSetUri: https://appleid.apple.com/auth/keys
 
 
+  liquibase:
+    enabled: false
+
 #######################################
 # A P P L I C A T I O N
 #######################################
@@ -51,7 +55,7 @@ logging:
   level:
     root: ERROR
     com.example: TRACE
-    org.springframework: DEBUG
+
 app:
   auth:
     tokenSecret: 6969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969 #!!ENTER_A_GENERATED_SECRET_HERE!!

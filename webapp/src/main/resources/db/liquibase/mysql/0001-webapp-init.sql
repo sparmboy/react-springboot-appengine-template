@@ -29,7 +29,7 @@ create table ROLE
 ) ENGINE = InnoDb
   DEFAULT CHARSET = utf8;
 
-create table USER
+create table USERS
 (
     ID             VARCHAR(255) NOT NULL,
     EMAIL          VARCHAR(255) NOT NULL,
@@ -59,7 +59,7 @@ create table USER_ROLES
 (
     USER_ID VARCHAR(255) not null,
     ROLE_ID VARCHAR(255) not null,
-    FOREIGN KEY (`USER_ID`) REFERENCES USER (`ID`),
+    FOREIGN KEY (`USER_ID`) REFERENCES USERS (`ID`),
     FOREIGN KEY (`ROLE_ID`) REFERENCES ROLE (`ID`)
 ) ENGINE = InnoDb
   DEFAULT CHARSET = utf8;

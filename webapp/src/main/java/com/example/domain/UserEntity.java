@@ -18,7 +18,7 @@ import javax.validation.constraints.NotNull;
 @Data
 public class UserEntity {
 
-    public final static String TABLE_NAME = "USER";
+    public final static String TABLE_NAME = "USERS";
 
     @Id
     @GeneratedValue(generator = "UUID")
