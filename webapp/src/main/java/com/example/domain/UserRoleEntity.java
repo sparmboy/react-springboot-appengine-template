@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.UuidGenerator;
 
 @Entity
 @Table(name = UserRoleEntity.TABLE_NAME)
@@ -18,11 +18,7 @@ public class UserRoleEntity extends AbstractBaseEntity{
     public final static String TABLE_NAME = "USER_ROLES";
 
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-        name = "UUID",
-        strategy = "org.hibernate.id.UUIDGenerator"
-    )
+    @UuidGenerator
     private String id;
 
     private String name;
