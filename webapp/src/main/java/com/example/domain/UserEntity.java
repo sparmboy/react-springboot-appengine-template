@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.Collection;
 import lombok.Data;
-import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.UuidGenerator;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
@@ -17,14 +17,10 @@ import javax.validation.constraints.NotNull;
 @Data
 public class UserEntity {
 
-    public final static String TABLE_NAME = "USER";
+    public final static String TABLE_NAME = "USERS";
 
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name="UUID",
-            strategy = "org.hibernate.id.UUIDGenerator"
-    )
+    @UuidGenerator
     private String id;
 
     @Column(nullable = false)
